@@ -899,42 +899,56 @@ ul {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 16px 18px;
+  padding: 20px 20px 18px;
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: box-shadow var(--transition);
+  gap: 14px;
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 
 .ov-stat-card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .ov-stat-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .ov-stat-icon {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 .ov-stat-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--text-secondary);
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ov-menu-btn {
   color: var(--text-muted);
   font-size: 1rem;
-  padding: 0 2px;
+  padding: 2px 4px;
   border-radius: 4px;
   transition: background var(--transition);
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
 }
 
 .ov-menu-btn:hover {
@@ -942,32 +956,55 @@ ul {
 }
 
 .ov-stat-value {
-  font-size: 1.7rem;
+  font-size: 2.1rem;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  padding: 0 0 2px;
 }
 
 .ov-stat-delta {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 0.72rem;
   font-weight: 600;
 }
 
 .ov-delta-dot {
-  width: 7px;
-  height: 7px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+}
+
+.ov-stat-delta.delta-up .ov-delta-dot {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.ov-stat-delta.delta-up .ov-delta-dot::after {
+  content: '▲';
+}
+
+.ov-stat-delta.delta-down .ov-delta-dot {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.ov-stat-delta.delta-down .ov-delta-dot::after {
+  content: '▼';
 }
 
 .ov-stat-extra {
   font-size: 0.67rem;
   color: var(--amber);
-  margin-top: 1px;
+  margin-top: 2px;
   font-weight: 600;
 }
 

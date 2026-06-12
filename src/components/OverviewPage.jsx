@@ -43,7 +43,7 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
       </div>
       <div className="ov-stat-value">{value}</div>
       <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
-        <span className="ov-delta-dot" style={{ background: up ? "var(--green)" : "var(--red)" }} />
+        <span className="ov-delta-dot" />
         {delta} since last month
       </div>
       {extra && <div className="ov-stat-extra">{extra}</div>}
