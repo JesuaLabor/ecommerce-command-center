@@ -255,12 +255,15 @@ export default function OverviewPage({ platforms }) {
     return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   }
 
+  const shopifyStale = platforms.shopify.status === "stale";
   const tiktokDown = platforms.tiktok.status === "unavailable";
   const tiktokStale = platforms.tiktok.status === "stale";
   let dataWarning = null;
   if (bothDown) dataWarning = "⚠ All platforms unavailable";
-  else if (!shopifyOk) dataWarning = "⚠ TikTok only — Shopify unavailable";
+  else if (!shopifyOk && platforms.shopify.status === "unavailable") dataWarning = "⚠ TikTok only — Shopify unavailable";
   else if (tiktokDown) dataWarning = "⚠ Shopify only — TikTok unavailable";
+  else if (shopifyStale && tiktokStale) dataWarning = "⚠ Shopify & TikTok data delayed";
+  else if (shopifyStale) dataWarning = `⚠ Shopify data ${platforms.shopify.staleness_minutes} min delayed`;
   else if (tiktokStale) dataWarning = `⚠ TikTok data ${platforms.tiktok.staleness_minutes} min delayed`;
 
   const statCards = [

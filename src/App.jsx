@@ -82,6 +82,7 @@ export default function App() {
             >
               <option value="healthy">✅ All Healthy</option>
               <option value="stale">⚠️ TikTok Stale</option>
+              <option value="shopify_stale">⚠️ Shopify Stale</option>
               <option value="unavailable">🔴 TikTok Down</option>
               <option value="shopify_down">🔴 Shopify Down</option>
               <option value="both_down">🔴🔴 Both Down</option>

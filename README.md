@@ -15,8 +15,11 @@ Then open [http://localhost:5173](http://localhost:5173).
 
 Use the **Demo Mode** dropdown in the header to toggle between:
 - ✅ All Healthy — both platforms live
-- ⚠️ TikTok Stale — TikTok data is 18 min old (exceeds 15 min threshold)
+- ⚠️ TikTok Stale — TikTok Shop data is 18 min old (exceeds threshold)
+- ⚠️ Shopify Stale — Shopify data is 20 min old (exceeds threshold)
 - 🔴 TikTok Down — TikTok API unavailable, Shopify-only view
+- 🔴 Shopify Down — Shopify API unavailable, TikTok-only view
+- 🔴🔴 Both Down — Both platform APIs unavailable, severe degradation view
 
 ---
 

@@ -107,6 +107,57 @@ export const MOCK_DASHBOARD_TIKTOK_STALE = {
   },
 };
 
+// --- Degraded response (Shopify stale, TikTok ok) ---
+export const MOCK_DASHBOARD_SHOPIFY_STALE = {
+  request_id: "req_shop_stale",
+  generated_at: new Date().toISOString(),
+  merchant_id: "merchant_9021",
+  date: new Date().toISOString().split("T")[0],
+  platforms: {
+    shopify: {
+      status: "stale",
+      last_synced: new Date(Date.now() - 20 * 60_000).toISOString(), // 20 min ago
+      staleness_minutes: 20,
+      data: {
+        revenue: { amount: 12480.5, currency: "USD" },
+        orders: { total: 214, pending: 18, fulfilled: 182, cancelled: 14 },
+        units_sold: 387,
+        inventory: {
+          total_skus: 52,
+          low_stock: [
+            { sku: "SHIRT-BLK-M", name: "Classic Black Tee (M)", stock: 3, threshold: 5 },
+            { sku: "HAT-WHT-OS", name: "White Snapback", stock: 2, threshold: 5 },
+          ],
+          out_of_stock: [{ sku: "SOCK-GRY-L", name: "Grey Crew Socks (L)", stock: 0 }],
+        },
+        recent_orders: [
+          { id: "SH-10091", customer: "Maria Santos", items: 2, total: 58.99, status: "fulfilled", time: "09:14 AM" },
+          { id: "SH-10090", customer: "James Reyes", items: 1, total: 24.5, status: "pending", time: "08:52 AM" },
+          { id: "SH-10089", customer: "Ana Lim", items: 3, total: 105.0, status: "fulfilled", time: "08:31 AM" },
+        ],
+      },
+    },
+    tiktok: {
+      status: "ok",
+      last_synced: new Date(Date.now() - 60_000).toISOString(), // 1 min ago
+      data: {
+        revenue: { amount: 4320.0, currency: "USD" },
+        orders: { total: 89, pending: 11, fulfilled: 74, cancelled: 4 },
+        units_sold: 143,
+        inventory: {
+          total_skus: 18,
+          low_stock: [{ sku: "TTSHIRT-RED-S", name: "Viral Red Tee (S)", stock: 4, threshold: 5 }],
+          out_of_stock: [],
+        },
+        recent_orders: [
+          { id: "TT-5521", customer: "Kyla Tan", items: 1, total: 39.99, status: "pending", time: "09:05 AM" },
+          { id: "TT-5520", customer: "Bea Cruz", items: 2, total: 79.98, status: "fulfilled", time: "08:44 AM" },
+        ],
+      },
+    },
+  },
+};
+
 export const MOCK_DASHBOARD_TIKTOK_UNAVAILABLE = {
   request_id: "req_err001",
   generated_at: new Date().toISOString(),
@@ -215,12 +266,13 @@ export const MOCK_DASHBOARD_BOTH_UNAVAILABLE = {
 
 /**
  * Simulates a fetch to GET /api/v1/dashboard
- * @param {string} scenario - "healthy" | "stale" | "unavailable" | "shopify_down" | "both_down"
+ * @param {string} scenario - "healthy" | "stale" | "shopify_stale" | "unavailable" | "shopify_down" | "both_down"
  */
 export async function fetchDashboard(scenario = "stale") {
   await new Promise((res) => setTimeout(res, 800)); // simulate network latency
   switch (scenario) {
     case "healthy":       return MOCK_DASHBOARD_HEALTHY;
+    case "shopify_stale": return MOCK_DASHBOARD_SHOPIFY_STALE;
     case "unavailable":   return MOCK_DASHBOARD_TIKTOK_UNAVAILABLE;
     case "shopify_down":  return MOCK_DASHBOARD_SHOPIFY_UNAVAILABLE;
     case "both_down":     return MOCK_DASHBOARD_BOTH_UNAVAILABLE;
