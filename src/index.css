@@ -957,10 +957,16 @@ ul {
 }
 
 .ov-stat-icon {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: #222228;
+  border: 1px solid #2e2e36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  line-height: 1;
+  color: var(--text-muted);
 }
 
 .ov-stat-label {

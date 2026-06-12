@@ -1,16 +1,26 @@
 import { useState } from "react";
 
-/**
- * OverviewPage — mirrors the reference screenshot layout using our existing light color scheme.
- *
- * Sections:
- *  1. KPI stat row (4 cards)
- *  2. "Today" — Gross Revenue bar chart + Today's Budget card + Peak Hours mini-chart
- *  3. "Stats" — Total Orders line chart with date range selector
- *
- * All chart data is generated mock data (no external chart library needed).
- * Props: platforms {object}
- */
+// ─── Monochrome SVG Icons ────────────────────────────────────────
+const IconTrendUp = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+const IconFolder = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+  </svg>
+);
+const IconBox = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+  </svg>
+);
+const IconTag = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+  </svg>
+);
 
 // ─── Helpers ────────────────────────────────────────────────────
 function generateHourlyRevenue() {
@@ -37,7 +47,7 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
   return (
     <div className="ov-stat-card" id={`ov-stat-${id}`}>
 
-      {/* ── Header: plain icon + label + ellipsis ── */}
+      {/* ── Header: dark icon chip + label + ellipsis ── */}
       <div className="ov-stat-header">
         <span className="ov-stat-icon">{icon}</span>
         <span className="ov-stat-label">{label}</span>
@@ -49,12 +59,10 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
         <div className="ov-stat-value">{value}</div>
       </div>
 
-      {/* ── Footer: arrow-circle badge + text ── */}
+      {/* ── Footer: filled circle with arrow + text ── */}
       <div className="ov-stat-footer">
         <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
-          <span className="ov-delta-circle">
-            {up ? "↑" : "↓"}
-          </span>
+          <span className="ov-delta-circle">{up ? "↑" : "↓"}</span>
           {delta} since last month
         </div>
         {extra && <div className="ov-stat-extra">{extra}</div>}
@@ -257,10 +265,10 @@ export default function OverviewPage({ platforms }) {
   else if (tiktokStale) dataWarning = `⚠ TikTok data ${platforms.tiktok.staleness_minutes} min delayed`;
 
   const statCards = [
-    { id: "revenue", icon: "📈", label: "Total Sales", value: fmtCurrency(totalRevenue), delta: "+12.4%", up: true, extra: dataWarning },
-    { id: "orders", icon: "🗂", label: "Orders", value: totalOrders.toLocaleString(), delta: "+5.2%", up: true, extra: dataWarning },
-    { id: "units", icon: "📦", label: "Units Sold", value: totalUnits.toLocaleString(), delta: "+4.3%", up: true, extra: dataWarning },
-    { id: "aov", icon: "🧾", label: "Avg. Order Value", value: `$${aov.toFixed(2)}`, delta: "-0.6%", up: false, extra: dataWarning },
+    { id: "revenue", icon: <IconTrendUp />, label: "Total Sales",       value: fmtCurrency(totalRevenue),            delta: "+12.4%", up: true,  extra: dataWarning },
+    { id: "orders",  icon: <IconFolder />,  label: "Orders",            value: totalOrders.toLocaleString(),         delta: "+5.2%",  up: true,  extra: dataWarning },
+    { id: "units",   icon: <IconBox />,     label: "Units Sold",        value: totalUnits.toLocaleString(),          delta: "+4.3%",  up: true,  extra: dataWarning },
+    { id: "aov",     icon: <IconTag />,     label: "Avg. Order Value",  value: `$${aov.toFixed(2)}`,                delta: "-0.6%",  up: false, extra: dataWarning },
   ];
 
   const hourlyData = generateHourlyRevenue();
