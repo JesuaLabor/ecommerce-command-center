@@ -36,17 +36,28 @@ function generateOrdersTrend() {
 function StatCard({ id, icon, label, value, delta, up, extra }) {
   return (
     <div className="ov-stat-card" id={`ov-stat-${id}`}>
+
+      {/* ── Header: icon chip + label + ellipsis ── */}
       <div className="ov-stat-header">
         <span className="ov-stat-icon">{icon}</span>
         <span className="ov-stat-label">{label}</span>
         <button className="ov-menu-btn" aria-label="Options">⋯</button>
       </div>
-      <div className="ov-stat-value">{value}</div>
-      <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
-        <span className="ov-delta-dot" />
-        {delta} since last month
+
+      {/* ── Body: value vertically centered ── */}
+      <div className="ov-stat-body">
+        <div className="ov-stat-value">{value}</div>
       </div>
-      {extra && <div className="ov-stat-extra">{extra}</div>}
+
+      {/* ── Footer: trend % then warning beneath ── */}
+      <div className="ov-stat-footer">
+        <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
+          <span className="ov-delta-dot" />
+          {delta} since last month
+        </div>
+        {extra && <div className="ov-stat-extra">{extra}</div>}
+      </div>
+
     </div>
   );
 }
