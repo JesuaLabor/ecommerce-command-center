@@ -44,7 +44,7 @@
 
   --sidebar-width: 192px;
   --topbar-height: 60px;
-  --right-panel-width: 280px;
+
 
   --transition: 0.15s ease;
 }
@@ -84,11 +84,11 @@ ul {
 /* ─── App Shell ──────────────────────────────────────────────── */
 .app {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr var(--right-panel-width);
+  grid-template-columns: var(--sidebar-width) 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas:
-    "sidebar topbar right"
-    "sidebar main   right";
+    "sidebar topbar"
+    "sidebar main";
   min-height: 100vh;
 }
 
@@ -1389,9 +1389,6 @@ ul {
       "sidebar main";
   }
 
-  .right-panel {
-    display: none;
-  }
 
   .kpi-row {
     grid-template-columns: repeat(2, 1fr);
