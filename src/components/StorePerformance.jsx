@@ -30,6 +30,7 @@ export default function StorePerformance({ platforms }) {
   const tiktokOk = platforms.tiktok.status !== "unavailable";
   const tiktokStale = platforms.tiktok.status === "stale";
   const shopifyOk = platforms.shopify.status !== "unavailable";
+  const shopifyStale = platforms.shopify.status === "stale";
   const bothDown = !shopifyOk && !tiktokOk;
 
   function fmtSales(n) {
@@ -45,9 +46,11 @@ export default function StorePerformance({ platforms }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {bothDown && <span className="sync-pill sync-pill-down">🔴 All platforms unavailable</span>}
           {!bothDown && !shopifyOk && <span className="sync-pill sync-pill-down">🔴 Shopify unavailable</span>}
-          {!bothDown && tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ TikTok delayed · {platforms.tiktok.staleness_minutes} min</span>}
-          {!bothDown && !tiktokOk && !tiktokStale && shopifyOk && <span className="sync-pill sync-pill-down">🔴 TikTok unavailable</span>}
-          {shopifyOk && tiktokOk && !tiktokStale && <span className="sync-pill sync-pill-ok">✓ All synced</span>}
+          {!bothDown && !tiktokOk && <span className="sync-pill sync-pill-down">🔴 TikTok unavailable</span>}
+          {!bothDown && shopifyStale && tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ Shopify & TikTok delayed</span>}
+          {!bothDown && shopifyStale && !tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ Shopify delayed · {platforms.shopify.staleness_minutes} min</span>}
+          {!bothDown && tiktokStale && !shopifyStale && <span className="sync-pill sync-pill-stale">⚠️ TikTok delayed · {platforms.tiktok.staleness_minutes} min</span>}
+          {shopifyOk && tiktokOk && !shopifyStale && !tiktokStale && <span className="sync-pill sync-pill-ok">✓ All synced</span>}
           <button className="three-dot-btn" aria-label="More options" id="store-performance-menu">⋯</button>
         </div>
       </div>
@@ -67,7 +70,7 @@ export default function StorePerformance({ platforms }) {
             const isTiktok  = store.platform === "tiktok";
             const isShopify = store.platform === "shopify";
             const unavailable = (isTiktok && !tiktokOk) || (isShopify && !shopifyOk);
-            const stale = isTiktok && tiktokStale;
+            const stale = (isTiktok && tiktokStale) || (isShopify && shopifyStale);
 
             return (
               <tr key={store.id} id={`store-row-${store.id}`}>

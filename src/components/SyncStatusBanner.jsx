@@ -27,13 +27,15 @@ export default function SyncStatusBanner({ platforms }) {
   }
 
   function getPlatformConfig(key, platform) {
+    const platformName = key === "shopify" ? "Shopify" : "TikTok Shop";
+    const otherPlatform = key === "shopify" ? "TikTok Shop" : "Shopify";
     if (platform.status === "ok") {
       return {
         icon: "✅",
         label: "Live",
         className: "sync-ok",
         detail: `Last synced ${formatMinutesAgo(platform.last_synced)}`,
-        tooltip: `${key.charAt(0).toUpperCase() + key.slice(1)} is connected and updating normally.`,
+        tooltip: `${platformName} is connected and updating normally.`,
       };
     }
     if (platform.status === "stale") {
@@ -43,7 +45,7 @@ export default function SyncStatusBanner({ platforms }) {
         label: `Delayed · ${mins} min`,
         className: "sync-stale",
         detail: `Last synced ${formatMinutesAgo(platform.last_synced)} · Showing last known data`,
-        tooltip: `TikTok Shop data is ${mins} minutes old (threshold: 15 min). This is usually resolved within a few minutes. Your dashboard continues to show the most recent available data.`,
+        tooltip: `${platformName} data is ${mins} minutes old (threshold: 15 min). This is usually resolved within a few minutes. Your dashboard continues to show the most recent available data.`,
       };
     }
     // unavailable
@@ -52,7 +54,7 @@ export default function SyncStatusBanner({ platforms }) {
       label: "Temporarily Unavailable",
       className: "sync-unavailable",
       detail: platform.error?.message || "Cannot reach platform API",
-      tooltip: `TikTok Shop is currently unreachable (${platform.error?.code ?? "CONNECTION_ERROR"}). We're retrying automatically. Your Shopify data is unaffected.`,
+      tooltip: `${platformName} is currently unreachable (${platform.error?.code ?? "CONNECTION_ERROR"}). We're retrying automatically. Your ${otherPlatform} data is unaffected.`,
     };
   }
 
