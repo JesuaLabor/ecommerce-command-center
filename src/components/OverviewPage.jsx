@@ -22,6 +22,35 @@ const IconTag = () => (
   </svg>
 );
 
+// ─── SparkCard SVG Icons ──────────────────────────────────────────
+const IconOrders = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+    <path d="M16 10a4 4 0 01-8 0"/>
+  </svg>
+);
+const IconRevenue = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+  </svg>
+);
+const IconUsers = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+  </svg>
+);
+const IconReturn = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+  </svg>
+);
+const IconFunnel = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+  </svg>
+);
+
 // ─── Helpers ────────────────────────────────────────────────────
 function generateHourlyRevenue() {
   const labels = ["19", "21", "23", "01", "03", "05", "07", "09", "11", "13", "15", "17"];
@@ -358,7 +387,7 @@ export default function OverviewPage({ platforms }) {
       {/* Row 1: Full-width Total Orders */}
       <SparkCard
         id="ov-total-orders"
-        icon="↗"
+        icon={<IconOrders />}
         label="Total Orders"
         value={totalOrders.toLocaleString()}
         sub="Orders completed in the last 7 days"
@@ -372,7 +401,7 @@ export default function OverviewPage({ platforms }) {
       <div className="ov-stats-2col">
         <SparkCard
           id="ov-gross-revenue"
-          icon="↗"
+          icon={<IconRevenue />}
           label="Gross Revenue"
           value={fmtFull(totalRevenue)}
           sub="Gross revenue for last 7 days"
@@ -382,7 +411,7 @@ export default function OverviewPage({ platforms }) {
         />
         <SparkCard
           id="ov-net-revenue"
-          icon="↗"
+          icon={<IconRevenue />}
           label="Net Revenue"
           value={fmtFull(totalRevenue * 0.95)}
           sub="Net revenue for last 7 days"
@@ -396,7 +425,7 @@ export default function OverviewPage({ platforms }) {
       <div className="ov-stats-3col">
         <SparkCard
           id="ov-active-customers"
-          icon="👤"
+          icon={<IconUsers />}
           label="Active customers"
           value="856"
           sub="Unique customers in the last 7 days"
@@ -406,7 +435,7 @@ export default function OverviewPage({ platforms }) {
         />
         <SparkCard
           id="ov-returning-revenue"
-          icon="↺"
+          icon={<IconReturn />}
           label="Returning revenue"
           value="61.8%"
           sub="Share of gross from returning buyers (7d)"
@@ -416,7 +445,7 @@ export default function OverviewPage({ platforms }) {
         />
         <SparkCard
           id="ov-checkout-conversion"
-          icon="▽"
+          icon={<IconFunnel />}
           label="Checkout conversion"
           value="3.33%"
           sub="Sessions that completed an order (7d avg.)"
