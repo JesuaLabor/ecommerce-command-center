@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchDashboard } from "./api/mockData";
 
-import Sidebar        from "./components/Sidebar";
-import OverviewPage   from "./components/OverviewPage";
-import KPISummary     from "./components/KPISummary";
+import Sidebar from "./components/Sidebar";
+import OverviewPage from "./components/OverviewPage";
+import KPISummary from "./components/KPISummary";
 import StorePerformance from "./components/StorePerformance";
-import LoadingScreen  from "./components/LoadingScreen";
+import LoadingScreen from "./components/LoadingScreen";
+import InventoryHealth from "./components/InventoryHealth";
+import RecentOrders from "./components/RecentOrders";
 
 /**
  * App — root component.
@@ -13,10 +15,10 @@ import LoadingScreen  from "./components/LoadingScreen";
  */
 export default function App() {
   const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading]             = useState(true);
-  const [error, setError]                 = useState(null);
-  const [scenario, setScenario]           = useState("healthy");
-  const [activePage, setActivePage]       = useState("overview");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [scenario, setScenario] = useState("healthy");
+  const [activePage, setActivePage] = useState("overview");
 
   const loadDashboard = useCallback(async (s) => {
     setLoading(true);
@@ -52,11 +54,11 @@ export default function App() {
   }
 
   const pageLabels = {
-    overview:  { title: "Overview",           sub: "Full performance snapshot across all connected platforms." },
-    shopify:   { title: "Shopify Management", sub: "7-day performance overview across all active Shopify storefronts." },
-    tiktok:    { title: "TikTok Shop",        sub: "TikTok Shop orders, revenue, and sync status." },
-    inventory: { title: "Inventory",          sub: "Stock levels, low-stock alerts, and SKU health." },
-    orders:    { title: "Orders",             sub: "Unified order feed across Shopify and TikTok Shop." },
+    overview: { title: "Overview", sub: "Full performance snapshot across all connected platforms." },
+    shopify: { title: "Shopify Management", sub: "7-day performance overview across all active Shopify storefronts." },
+    tiktok: { title: "TikTok Shop", sub: "TikTok Shop orders, revenue, and sync status." },
+    inventory: { title: "Inventory", sub: "Stock levels, low-stock alerts, and SKU health." },
+    orders: { title: "Orders", sub: "Unified order feed across Shopify and TikTok Shop." },
   };
   const page = pageLabels[activePage] ?? pageLabels.overview;
 
@@ -89,7 +91,7 @@ export default function App() {
           <div className="main-topbar-right">
             <button className="topbar-icon-btn" aria-label="Notifications" id="btn-notifications">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" />
               </svg>
               <span className="notif-badge">2</span>
             </button>
@@ -100,6 +102,34 @@ export default function App() {
         {/* Page content */}
         {activePage === "overview" ? (
           <OverviewPage platforms={dashboardData.platforms} />
+        ) : activePage === "inventory" ? (
+          <>
+            <div className="page-header">
+              <div className="page-title-block">
+                <h1 className="page-title">{page.title}</h1>
+                <p className="page-subtitle">{page.sub}</p>
+              </div>
+              <div className="page-actions">
+                <button className="btn-outline" id="btn-date-range">📅 Last 7 Days</button>
+                <button className="btn-primary" id="btn-sync-stores" onClick={() => loadDashboard(scenario)}>↻ Sync Stores</button>
+              </div>
+            </div>
+            <InventoryHealth platforms={dashboardData.platforms} />
+          </>
+        ) : activePage === "orders" ? (
+          <>
+            <div className="page-header">
+              <div className="page-title-block">
+                <h1 className="page-title">{page.title}</h1>
+                <p className="page-subtitle">{page.sub}</p>
+              </div>
+              <div className="page-actions">
+                <button className="btn-outline" id="btn-date-range">📅 Last 7 Days</button>
+                <button className="btn-primary" id="btn-sync-stores" onClick={() => loadDashboard(scenario)}>↻ Sync Stores</button>
+              </div>
+            </div>
+            <RecentOrders platforms={dashboardData.platforms} />
+          </>
         ) : (
           <>
             <div className="page-header">

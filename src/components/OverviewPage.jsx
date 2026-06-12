@@ -1,53 +1,54 @@
 import { useState } from "react";
+import SyncStatusBanner from "./SyncStatusBanner";
 
 // ─── Monochrome SVG Icons ────────────────────────────────────────
 const IconTrendUp = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" />
   </svg>
 );
 const IconFolder = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
   </svg>
 );
 const IconBox = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
   </svg>
 );
 const IconTag = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+    <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
   </svg>
 );
 
 // ─── SparkCard SVG Icons ──────────────────────────────────────────
 const IconOrders = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-    <path d="M16 10a4 4 0 01-8 0"/>
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" />
+    <path d="M16 10a4 4 0 01-8 0" />
   </svg>
 );
 const IconRevenue = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+    <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
   </svg>
 );
 const IconUsers = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" />
   </svg>
 );
 const IconReturn = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+    <polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
   </svg>
 );
 const IconFunnel = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
   </svg>
 );
 
@@ -151,40 +152,6 @@ function SparkCard({ id, icon, label, value, sub, delta, up, sparkData, fullWidt
   );
 }
 
-/**
- * PlatformStatusStrip — shown when any platform is not "ok".
- */
-function PlatformStatusStrip({ platforms }) {
-  const shopify = platforms.shopify;
-  const tiktok = platforms.tiktok;
-  if (shopify.status === "ok" && tiktok.status === "ok") return null;
-
-  function formatAgo(iso) {
-    if (!iso) return null;
-    const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-    return mins < 1 ? "just now" : `${mins} min ago`;
-  }
-
-  const items = [
-    { key: "shopify", label: "Shopify", status: shopify.status, ago: formatAgo(shopify.last_synced) },
-    { key: "tiktok", label: "TikTok Shop", status: tiktok.status, ago: formatAgo(tiktok.last_synced), staleness: tiktok.staleness_minutes, error: tiktok.error?.message },
-  ];
-
-  return (
-    <div className="ov-status-strip">
-      <span className="ov-status-strip-label">Data sources:</span>
-      {items.map((item) => (
-        <div key={item.key} className={`ov-status-chip ov-status-${item.status}`}>
-          <span className="ov-status-chip-dot" />
-          <span className="ov-status-chip-name">{item.label}</span>
-          {item.status === "ok" && <span className="ov-status-chip-detail">Live · {item.ago}</span>}
-          {item.status === "stale" && <span className="ov-status-chip-detail">Delayed · {item.staleness} min old · Showing last known</span>}
-          {item.status === "unavailable" && <span className="ov-status-chip-detail">Unavailable · Shopify data shown only</span>}
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function GrossRevenueChart({ data }) {
   const max = Math.max(...data.today, ...data.yesterday);
@@ -196,7 +163,7 @@ function GrossRevenueChart({ data }) {
         {data.today.map((v, i) => (
           <div key={i} className="ov-bar-group">
             <div className="ov-bar ov-bar-yesterday" style={{ height: `${Math.round((data.yesterday[i] / max) * 100)}%` }} />
-            <div className="ov-bar ov-bar-today"     style={{ height: `${Math.round((v / max) * 100)}%` }} />
+            <div className="ov-bar ov-bar-today" style={{ height: `${Math.round((v / max) * 100)}%` }} />
           </div>
         ))}
       </div>
@@ -297,16 +264,16 @@ export default function OverviewPage({ platforms }) {
   else if (tiktokStale) dataWarning = `⚠ TikTok data ${platforms.tiktok.staleness_minutes} min delayed`;
 
   const statCards = [
-    { id: "revenue", icon: <IconTrendUp />, label: "Total Sales",      value: fmtCurrency(totalRevenue),    delta: "+12.4%", up: true,  extra: dataWarning },
-    { id: "orders",  icon: <IconFolder />,  label: "Orders",           value: totalOrders.toLocaleString(), delta: "+5.2%",  up: true,  extra: dataWarning },
-    { id: "units",   icon: <IconBox />,     label: "Units Sold",       value: totalUnits.toLocaleString(),  delta: "+4.3%",  up: true,  extra: dataWarning },
-    { id: "aov",     icon: <IconTag />,     label: "Avg. Order Value", value: `$${aov.toFixed(2)}`,         delta: "-0.6%",  up: false, extra: dataWarning },
+    { id: "revenue", icon: <IconTrendUp />, label: "Total Sales", value: fmtCurrency(totalRevenue), delta: "+12.4%", up: true, extra: dataWarning },
+    { id: "orders", icon: <IconFolder />, label: "Orders", value: totalOrders.toLocaleString(), delta: "+5.2%", up: true, extra: dataWarning },
+    { id: "units", icon: <IconBox />, label: "Units Sold", value: totalUnits.toLocaleString(), delta: "+4.3%", up: true, extra: dataWarning },
+    { id: "aov", icon: <IconTag />, label: "Avg. Order Value", value: `$${aov.toFixed(2)}`, delta: "-0.6%", up: false, extra: dataWarning },
   ];
 
   const hourlyData = generateHourlyRevenue();
-  const peakData   = generatePeakHours();
+  const peakData = generatePeakHours();
 
-  const today   = new Date();
+  const today = new Date();
   const weekAgo = new Date(today); weekAgo.setDate(today.getDate() - 6);
   const dateRange = `${weekAgo.toLocaleDateString("en-US", { month: "short", day: "numeric" })} – ${today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
 
@@ -314,7 +281,7 @@ export default function OverviewPage({ platforms }) {
     <div className="ov-root">
 
       {/* ── Platform status strip ── */}
-      <PlatformStatusStrip platforms={platforms} />
+      <SyncStatusBanner platforms={platforms} />
 
       {/* ── 1. Stat Cards Row ── */}
       <div className="ov-stat-row">
@@ -393,7 +360,7 @@ export default function OverviewPage({ platforms }) {
         sub="Orders completed in the last 7 days"
         delta="+12.5%"
         up={true}
-        sparkData={[6,8,7,10,9,14,12,18,16,20,17,22]}
+        sparkData={[6, 8, 7, 10, 9, 14, 12, 18, 16, 20, 17, 22]}
         fullWidth
       />
 
@@ -407,7 +374,7 @@ export default function OverviewPage({ platforms }) {
           sub="Gross revenue for last 7 days"
           delta="+9.9%"
           up={true}
-          sparkData={[5,7,6,9,8,13,11,16,14,18,15,20]}
+          sparkData={[5, 7, 6, 9, 8, 13, 11, 16, 14, 18, 15, 20]}
         />
         <SparkCard
           id="ov-net-revenue"
@@ -417,7 +384,7 @@ export default function OverviewPage({ platforms }) {
           sub="Net revenue for last 7 days"
           delta="+9.9%"
           up={true}
-          sparkData={[5,6,5,8,7,12,10,15,13,17,14,19]}
+          sparkData={[5, 6, 5, 8, 7, 12, 10, 15, 13, 17, 14, 19]}
         />
       </div>
 
@@ -431,7 +398,7 @@ export default function OverviewPage({ platforms }) {
           sub="Unique customers in the last 7 days"
           delta="+8.1%"
           up={true}
-          sparkData={[4,5,4,7,6,9,8,12,10,14,11,15]}
+          sparkData={[4, 5, 4, 7, 6, 9, 8, 12, 10, 14, 11, 15]}
         />
         <SparkCard
           id="ov-returning-revenue"
@@ -441,7 +408,7 @@ export default function OverviewPage({ platforms }) {
           sub="Share of gross from returning buyers (7d)"
           delta="+2.1%"
           up={true}
-          sparkData={[8,9,8,10,9,11,10,13,11,14,12,14]}
+          sparkData={[8, 9, 8, 10, 9, 11, 10, 13, 11, 14, 12, 14]}
         />
         <SparkCard
           id="ov-checkout-conversion"
@@ -451,7 +418,7 @@ export default function OverviewPage({ platforms }) {
           sub="Sessions that completed an order (7d avg.)"
           delta="+0.6%"
           up={true}
-          sparkData={[3,3,4,3,4,5,4,6,5,7,6,7]}
+          sparkData={[3, 3, 4, 3, 4, 5, 4, 6, 5, 7, 6, 7]}
         />
       </div>
 
