@@ -1159,8 +1159,16 @@ ul {
 }
 
 .ov-card-icon {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 .ov-card-title {
@@ -1183,18 +1191,17 @@ ul {
 }
 
 /* Gross Revenue chart */
-.ov-revenue-meta {
+.ov-revenue-legend {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 4px;
 }
 
-.ov-revenue-pair {
+.ov-revenue-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .ov-legend-dot {
@@ -1212,16 +1219,37 @@ ul {
   background: var(--text-muted);
 }
 
-.ov-revenue-val {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text-primary);
+.ov-revenue-legend-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .ov-revenue-delta {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   margin-left: auto;
+}
+
+.ov-revenue-values {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.ov-revenue-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ov-revenue-val-yesterday {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .ov-revenue-chart {

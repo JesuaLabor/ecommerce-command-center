@@ -134,9 +134,9 @@ function BudgetCard({ used, total }) {
   const pct = Math.round((used / total) * 100);
   return (
     <div className="ov-budget-card" id="ov-budget">
-      <div className="ov-budget-header">
-        <span className="ov-budget-icon">⏱</span>
-        <span className="ov-budget-title">Today&apos;s budget</span>
+      <div className="ov-card-header">
+        <span className="ov-card-icon">⏱</span>
+        <span className="ov-card-title">Today&apos;s budget</span>
         <button className="ov-expand-btn" aria-label="Expand">⤢</button>
       </div>
       <div className="ov-budget-row">
@@ -168,9 +168,9 @@ function PeakHoursCard({ data }) {
 
   return (
     <div className="ov-peak-card" id="ov-peak-hours">
-      <div className="ov-budget-header">
-        <span className="ov-budget-icon">⏱</span>
-        <span className="ov-budget-title">Peak hours</span>
+      <div className="ov-card-header">
+        <span className="ov-card-icon">⏱</span>
+        <span className="ov-card-title">Peak hours</span>
         <button className="ov-expand-btn" aria-label="Expand">⤢</button>
       </div>
       <div className="ov-peak-time">11 AM – 1 PM</div>
@@ -289,16 +289,22 @@ export default function OverviewPage({ platforms }) {
             <span className="ov-card-title">Gross Revenue</span>
             <button className="ov-expand-btn" aria-label="Expand">⤢</button>
           </div>
-          <div className="ov-revenue-meta">
-            <div className="ov-revenue-pair">
-              <span className="ov-legend-dot dot-today" /> Today
-              <span className="ov-revenue-val">$243.65</span>
+          {/* Legend labels row */}
+          <div className="ov-revenue-legend">
+            <div className="ov-revenue-legend-item">
+              <span className="ov-legend-dot dot-today" />
+              <span className="ov-revenue-legend-label">Today</span>
             </div>
-            <div className="ov-revenue-pair">
-              <span className="ov-legend-dot dot-yesterday" /> Yesterday
-              <span className="ov-revenue-val">$208.19</span>
+            <div className="ov-revenue-legend-item">
+              <span className="ov-legend-dot dot-yesterday" />
+              <span className="ov-revenue-legend-label">Yesterday</span>
             </div>
             <span className="delta-up ov-revenue-delta">↑ 17.0%</span>
+          </div>
+          {/* Values row */}
+          <div className="ov-revenue-values">
+            <span className="ov-revenue-val">$243.65</span>
+            <span className="ov-revenue-val ov-revenue-val-yesterday">$208.19</span>
           </div>
           <GrossRevenueChart data={hourlyData} />
         </div>
