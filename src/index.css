@@ -1225,10 +1225,17 @@ ul {
   font-weight: 500;
 }
 
-.ov-revenue-delta {
-  font-size: 0.78rem;
-  font-weight: 700;
+.ov-revenue-delta-badge {
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .ov-revenue-values {

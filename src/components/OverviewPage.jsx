@@ -299,7 +299,7 @@ export default function OverviewPage({ platforms }) {
               <span className="ov-legend-dot dot-yesterday" />
               <span className="ov-revenue-legend-label">Yesterday</span>
             </div>
-            <span className="delta-up ov-revenue-delta">↑ 17.0%</span>
+            <span className="ov-revenue-delta-badge">↑ 17.0%</span>
           </div>
           {/* Values row */}
           <div className="ov-revenue-values">
