@@ -24,7 +24,6 @@ const IconTag = () => (
 
 // ─── Helpers ────────────────────────────────────────────────────
 function generateHourlyRevenue() {
-  // 24 hours starting 19:00 yesterday → 17:00 today
   const labels = ["19", "21", "23", "01", "03", "05", "07", "09", "11", "13", "15", "17"];
   const today = [8, 10, 6, 4, 3, 2, 5, 14, 22, 28, 26, 30, 27, 24, 20, 22, 18, 16, 14, 12, 10, 8, 9, 11];
   const yesterday = [6, 8, 4, 3, 2, 1, 4, 10, 16, 20, 18, 22, 20, 18, 15, 16, 14, 12, 10, 8, 7, 6, 7, 8];
@@ -32,12 +31,10 @@ function generateHourlyRevenue() {
 }
 
 function generatePeakHours() {
-  // 24 bars representing each hour
   return [2, 3, 4, 3, 2, 1, 2, 5, 10, 14, 18, 20, 19, 15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2];
 }
 
 function generateOrdersTrend() {
-  // 7-day trend as SVG polyline points
   return [180, 210, 195, 240, 220, 260, 230, 280, 260, 300, 285, 310];
 }
 
@@ -46,20 +43,14 @@ function generateOrdersTrend() {
 function StatCard({ id, icon, label, value, delta, up, extra }) {
   return (
     <div className="ov-stat-card" id={`ov-stat-${id}`}>
-
-      {/* ── Header: dark icon chip + label + ellipsis ── */}
       <div className="ov-stat-header">
         <span className="ov-stat-icon">{icon}</span>
         <span className="ov-stat-label">{label}</span>
         <button className="ov-menu-btn" aria-label="Options">⋯</button>
       </div>
-
-      {/* ── Body: large value ── */}
       <div className="ov-stat-body">
         <div className="ov-stat-value">{value}</div>
       </div>
-
-      {/* ── Footer: filled circle with arrow + text ── */}
       <div className="ov-stat-footer">
         <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
           <span className="ov-delta-circle">{up ? "↑" : "↓"}</span>
@@ -67,15 +58,72 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
         </div>
         {extra && <div className="ov-stat-extra">{extra}</div>}
       </div>
-
     </div>
   );
 }
 
+/** SparkCard — metric card with mini SVG area sparkline, used in the Stats section */
+function SparkCard({ id, icon, label, value, sub, delta, up, sparkData, fullWidth }) {
+  const w = 400, h = 60;
+  const max = Math.max(...sparkData);
+  const min = Math.min(...sparkData);
+  const range = max - min || 1;
+  const step = w / (sparkData.length - 1);
+
+  const points = sparkData
+    .map((v, i) => `${Math.round(i * step)},${Math.round(h - ((v - min) / range) * (h - 8) - 4)}`)
+    .join(" ");
+  const fillPoints = `0,${h} ${points} ${w},${h}`;
+
+  return (
+    <div className={`ov-spark-card${fullWidth ? " ov-spark-card--full" : ""}`} id={id}>
+      {/* Header row */}
+      <div className="ov-spark-header">
+        <div className="ov-spark-header-left">
+          <span className="ov-spark-icon">{icon}</span>
+          <span className="ov-spark-label">{label}</span>
+        </div>
+        <button className="ov-expand-btn" aria-label="Expand">⤢</button>
+      </div>
+
+      {/* Value + delta badge */}
+      <div className="ov-spark-value-row">
+        <div className="ov-spark-value">{value}</div>
+        <span className={`ov-spark-badge ${up ? "badge-up" : "badge-down"}`}>
+          <span className="ov-spark-badge-arrow">{up ? "↑" : "↓"}</span>
+          {delta}
+        </span>
+      </div>
+
+      {/* Subtitle */}
+      <div className="ov-spark-sub">{sub}</div>
+
+      {/* Sparkline chart */}
+      <div className="ov-spark-chart">
+        <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="ov-spark-svg">
+          <defs>
+            <linearGradient id={`spark-fill-${id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--accent-blue)" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="var(--accent-blue)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <polygon points={fillPoints} fill={`url(#spark-fill-${id})`} />
+          <polyline
+            points={points}
+            fill="none"
+            stroke="var(--accent-blue)"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
 
 /**
- * PlatformStatusStrip — shown below stat cards when any platform is not "ok".
- * Gives the merchant a clear, calm indicator of what data is (and isn't) live.
+ * PlatformStatusStrip — shown when any platform is not "ok".
  */
 function PlatformStatusStrip({ platforms }) {
   const shopify = platforms.shopify;
@@ -89,20 +137,8 @@ function PlatformStatusStrip({ platforms }) {
   }
 
   const items = [
-    {
-      key: "shopify",
-      label: "Shopify",
-      status: shopify.status,
-      ago: formatAgo(shopify.last_synced),
-    },
-    {
-      key: "tiktok",
-      label: "TikTok Shop",
-      status: tiktok.status,
-      ago: formatAgo(tiktok.last_synced),
-      staleness: tiktok.staleness_minutes,
-      error: tiktok.error?.message,
-    },
+    { key: "shopify", label: "Shopify", status: shopify.status, ago: formatAgo(shopify.last_synced) },
+    { key: "tiktok", label: "TikTok Shop", status: tiktok.status, ago: formatAgo(tiktok.last_synced), staleness: tiktok.staleness_minutes, error: tiktok.error?.message },
   ];
 
   return (
@@ -112,15 +148,9 @@ function PlatformStatusStrip({ platforms }) {
         <div key={item.key} className={`ov-status-chip ov-status-${item.status}`}>
           <span className="ov-status-chip-dot" />
           <span className="ov-status-chip-name">{item.label}</span>
-          {item.status === "ok" && (
-            <span className="ov-status-chip-detail">Live · {item.ago}</span>
-          )}
-          {item.status === "stale" && (
-            <span className="ov-status-chip-detail">Delayed · {item.staleness} min old · Showing last known</span>
-          )}
-          {item.status === "unavailable" && (
-            <span className="ov-status-chip-detail">Unavailable · Shopify data shown only</span>
-          )}
+          {item.status === "ok" && <span className="ov-status-chip-detail">Live · {item.ago}</span>}
+          {item.status === "stale" && <span className="ov-status-chip-detail">Delayed · {item.staleness} min old · Showing last known</span>}
+          {item.status === "unavailable" && <span className="ov-status-chip-detail">Unavailable · Shopify data shown only</span>}
         </div>
       ))}
     </div>
@@ -136,17 +166,13 @@ function GrossRevenueChart({ data }) {
       <div className="ov-chart-bars">
         {data.today.map((v, i) => (
           <div key={i} className="ov-bar-group">
-            <div className="ov-bar ov-bar-yesterday"
-              style={{ height: `${Math.round((data.yesterday[i] / max) * 100)}%` }} />
-            <div className="ov-bar ov-bar-today"
-              style={{ height: `${Math.round((v / max) * 100)}%` }} />
+            <div className="ov-bar ov-bar-yesterday" style={{ height: `${Math.round((data.yesterday[i] / max) * 100)}%` }} />
+            <div className="ov-bar ov-bar-today"     style={{ height: `${Math.round((v / max) * 100)}%` }} />
           </div>
         ))}
       </div>
       <div className="ov-chart-labels">
-        {hours.map((h, i) => (
-          <span key={i} className="ov-chart-label">{h}</span>
-        ))}
+        {hours.map((h, i) => <span key={i} className="ov-chart-label">{h}</span>)}
       </div>
     </div>
   );
@@ -210,33 +236,6 @@ function PeakHoursCard({ data }) {
   );
 }
 
-function OrdersTrendChart({ data }) {
-  const w = 600, h = 80;
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const range = max - min || 1;
-  const step = w / (data.length - 1);
-
-  const points = data
-    .map((v, i) => `${Math.round(i * step)},${Math.round(h - ((v - min) / range) * (h - 10) - 5)}`)
-    .join(" ");
-
-  const fillPoints = `0,${h} ${points} ${w},${h}`;
-
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="ov-orders-svg" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="orders-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--accent-blue)" stopOpacity="0.15" />
-          <stop offset="100%" stopColor="var(--accent-blue)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon points={fillPoints} fill="url(#orders-fill)" />
-      <polyline points={points} fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 // ─── Main Page ───────────────────────────────────────────────────
 export default function OverviewPage({ platforms }) {
   const [statsPeriod, setStatsPeriod] = useState("7d");
@@ -256,6 +255,10 @@ export default function OverviewPage({ platforms }) {
     return `$${n.toFixed(2)}`;
   }
 
+  function fmtFull(n) {
+    return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+
   const tiktokDown = platforms.tiktok.status === "unavailable";
   const tiktokStale = platforms.tiktok.status === "stale";
   let dataWarning = null;
@@ -265,40 +268,35 @@ export default function OverviewPage({ platforms }) {
   else if (tiktokStale) dataWarning = `⚠ TikTok data ${platforms.tiktok.staleness_minutes} min delayed`;
 
   const statCards = [
-    { id: "revenue", icon: <IconTrendUp />, label: "Total Sales",       value: fmtCurrency(totalRevenue),            delta: "+12.4%", up: true,  extra: dataWarning },
-    { id: "orders",  icon: <IconFolder />,  label: "Orders",            value: totalOrders.toLocaleString(),         delta: "+5.2%",  up: true,  extra: dataWarning },
-    { id: "units",   icon: <IconBox />,     label: "Units Sold",        value: totalUnits.toLocaleString(),          delta: "+4.3%",  up: true,  extra: dataWarning },
-    { id: "aov",     icon: <IconTag />,     label: "Avg. Order Value",  value: `$${aov.toFixed(2)}`,                delta: "-0.6%",  up: false, extra: dataWarning },
+    { id: "revenue", icon: <IconTrendUp />, label: "Total Sales",      value: fmtCurrency(totalRevenue),    delta: "+12.4%", up: true,  extra: dataWarning },
+    { id: "orders",  icon: <IconFolder />,  label: "Orders",           value: totalOrders.toLocaleString(), delta: "+5.2%",  up: true,  extra: dataWarning },
+    { id: "units",   icon: <IconBox />,     label: "Units Sold",       value: totalUnits.toLocaleString(),  delta: "+4.3%",  up: true,  extra: dataWarning },
+    { id: "aov",     icon: <IconTag />,     label: "Avg. Order Value", value: `$${aov.toFixed(2)}`,         delta: "-0.6%",  up: false, extra: dataWarning },
   ];
 
   const hourlyData = generateHourlyRevenue();
-  const peakData = generatePeakHours();
-  const trendData = generateOrdersTrend();
+  const peakData   = generatePeakHours();
 
-  const today = new Date();
+  const today   = new Date();
   const weekAgo = new Date(today); weekAgo.setDate(today.getDate() - 6);
   const dateRange = `${weekAgo.toLocaleDateString("en-US", { month: "short", day: "numeric" })} – ${today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
 
   return (
     <div className="ov-root">
 
-      {/* ── Platform status strip — seen first so merchants know data health immediately ── */}
+      {/* ── Platform status strip ── */}
       <PlatformStatusStrip platforms={platforms} />
 
       {/* ── 1. Stat Cards Row ── */}
       <div className="ov-stat-row">
-        {statCards.map((c) => (
-          <StatCard key={c.id} {...c} />
-        ))}
+        {statCards.map((c) => <StatCard key={c.id} {...c} />)}
       </div>
 
       {/* ── 2. Today Section ── */}
       <div className="ov-section-header">
         <h2 className="ov-section-title">Today</h2>
         <div className="ov-section-actions">
-          <button className="btn-outline ov-action-btn" id="btn-customize-today">
-            ✦ Customize
-          </button>
+          <button className="btn-outline ov-action-btn" id="btn-customize-today">✦ Customize</button>
           <button className="ov-menu-btn" aria-label="More">⋯</button>
         </div>
       </div>
@@ -311,7 +309,6 @@ export default function OverviewPage({ platforms }) {
             <span className="ov-card-title">Gross Revenue</span>
             <button className="ov-expand-btn" aria-label="Expand">⤢</button>
           </div>
-          {/* Legend labels row */}
           <div className="ov-revenue-legend">
             <div className="ov-revenue-legend-item">
               <span className="ov-legend-dot dot-today" />
@@ -323,7 +320,6 @@ export default function OverviewPage({ platforms }) {
             </div>
             <span className="ov-revenue-delta-badge">↑ 17.0%</span>
           </div>
-          {/* Values row */}
           <div className="ov-revenue-values">
             <span className="ov-revenue-val">$243.65</span>
             <span className="ov-revenue-val ov-revenue-val-yesterday">$208.19</span>
@@ -331,7 +327,7 @@ export default function OverviewPage({ platforms }) {
           <GrossRevenueChart data={hourlyData} />
         </div>
 
-        {/* Right column: Budget + Peak hours */}
+        {/* Right column */}
         <div className="ov-right-col">
           <BudgetCard used={223.65} total={480.00} />
           <PeakHoursCard data={peakData} />
@@ -349,32 +345,85 @@ export default function OverviewPage({ platforms }) {
             id="stats-period"
             aria-label="Stats period"
           >
-            <option value="7d">Last 7 days ▾</option>
-            <option value="30d">Last 30 days ▾</option>
-            <option value="90d">Last 90 days ▾</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
           </select>
-          <button className="btn-outline ov-action-btn" id="btn-date-range-stats">
-            📅 {dateRange}
-          </button>
-          <button className="btn-outline ov-action-btn" id="btn-customize-stats">
-            ✦ Customize
-          </button>
+          <button className="btn-outline ov-action-btn" id="btn-date-range-stats">📅 {dateRange}</button>
+          <button className="btn-outline ov-action-btn" id="btn-customize-stats">✦ Customize</button>
           <button className="ov-menu-btn" aria-label="More">⋯</button>
         </div>
       </div>
 
-      <div className="ov-stats-card" id="ov-total-orders">
-        <div className="ov-card-header">
-          <span className="ov-card-icon">🛒</span>
-          <span className="ov-card-title">Total Orders</span>
-          <button className="ov-expand-btn" aria-label="Expand">⤢</button>
-        </div>
-        <div className="ov-orders-value">{totalOrders.toLocaleString()}</div>
-        <div className="ov-orders-sub">
-          Orders completed in the last 7 days
-          <span className="delta-up" style={{ marginLeft: 12 }}>↑ 12.5%</span>
-        </div>
-        <OrdersTrendChart data={trendData} />
+      {/* Row 1: Full-width Total Orders */}
+      <SparkCard
+        id="ov-total-orders"
+        icon="↗"
+        label="Total Orders"
+        value={totalOrders.toLocaleString()}
+        sub="Orders completed in the last 7 days"
+        delta="+12.5%"
+        up={true}
+        sparkData={[6,8,7,10,9,14,12,18,16,20,17,22]}
+        fullWidth
+      />
+
+      {/* Row 2: 2-column */}
+      <div className="ov-stats-2col">
+        <SparkCard
+          id="ov-gross-revenue"
+          icon="↗"
+          label="Gross Revenue"
+          value={fmtFull(totalRevenue)}
+          sub="Gross revenue for last 7 days"
+          delta="+9.9%"
+          up={true}
+          sparkData={[5,7,6,9,8,13,11,16,14,18,15,20]}
+        />
+        <SparkCard
+          id="ov-net-revenue"
+          icon="↗"
+          label="Net Revenue"
+          value={fmtFull(totalRevenue * 0.95)}
+          sub="Net revenue for last 7 days"
+          delta="+9.9%"
+          up={true}
+          sparkData={[5,6,5,8,7,12,10,15,13,17,14,19]}
+        />
+      </div>
+
+      {/* Row 3: 3-column */}
+      <div className="ov-stats-3col">
+        <SparkCard
+          id="ov-active-customers"
+          icon="👤"
+          label="Active customers"
+          value="856"
+          sub="Unique customers in the last 7 days"
+          delta="+8.1%"
+          up={true}
+          sparkData={[4,5,4,7,6,9,8,12,10,14,11,15]}
+        />
+        <SparkCard
+          id="ov-returning-revenue"
+          icon="↺"
+          label="Returning revenue"
+          value="61.8%"
+          sub="Share of gross from returning buyers (7d)"
+          delta="+2.1%"
+          up={true}
+          sparkData={[8,9,8,10,9,11,10,13,11,14,12,14]}
+        />
+        <SparkCard
+          id="ov-checkout-conversion"
+          icon="▽"
+          label="Checkout conversion"
+          value="3.33%"
+          sub="Sessions that completed an order (7d avg.)"
+          delta="+0.6%"
+          up={true}
+          sparkData={[3,3,4,3,4,5,4,6,5,7,6,7]}
+        />
       </div>
 
     </div>

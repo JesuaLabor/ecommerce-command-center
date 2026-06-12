@@ -1530,28 +1530,121 @@ ul {
   /* #30F0B3 @ 50% */
 }
 
-/* Stats / Orders section */
-.ov-stats-card {}
+/* ─── SparkCard — Stats section metric cards ─────────────────── */
+.ov-stats-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
 
-.ov-orders-value {
-  font-size: 1.8rem;
+.ov-stats-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.ov-spark-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 18px 20px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 160px;
+}
+
+.ov-spark-card--full {
+  min-height: 200px;
+}
+
+/* Header */
+.ov-spark-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.ov-spark-header-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ov-spark-icon {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.ov-spark-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Value + badge row */
+.ov-spark-value-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.ov-spark-value {
+  font-size: 1.9rem;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
-  margin-bottom: 2px;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
-.ov-orders-sub {
-  font-size: 0.75rem;
+.ov-spark-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.ov-spark-badge.badge-up {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.ov-spark-badge.badge-down {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.ov-spark-badge-arrow {
+  font-size: 0.7rem;
+}
+
+/* Subtitle */
+.ov-spark-sub {
+  font-size: 0.7rem;
   color: var(--text-secondary);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-.ov-orders-svg {
+/* Sparkline chart — flush to card edges */
+.ov-spark-chart {
+  flex: 1;
+  margin: 0 -20px;
+  min-height: 60px;
+}
+
+.ov-spark-svg {
   width: 100%;
-  height: 80px;
+  height: 100%;
   display: block;
-  overflow: visible;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */
