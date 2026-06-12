@@ -1,48 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ─── Design Tokens — Dark Theme ────────────────────────────── */
+/* ─── Design Tokens — Eye-Comfort Dark Palette ───────────────── */
 :root {
-  --bg-app:            #0d0d0f;
-  --bg-sidebar:        #111116;
-  --bg-card:           #18181c;
-  --bg-card-hover:     #1e1e24;
-  --bg-input:          #1a1a20;
-  --bg-table-row:      #18181c;
-  --bg-table-row-hover:#1e1e24;
+  /* ── Backgrounds (Depth Layer) ── */
+  --bg-app:            #0F172A;   /* Slate 900 — deep navy-gray, avoids pure black */
+  --bg-sidebar:        #0F172A;   /* same depth as app */
+  --bg-card:           #1E293B;   /* Slate 800 — lifts cards clearly off background */
+  --bg-card-hover:     #334155;   /* Slate 700 — clear interactive feedback */
+  --bg-input:          #1E293B;
+  --bg-table-row:      #1E293B;
+  --bg-table-row-hover:#334155;
 
-  --text-primary:      #f1f1f3;
-  --text-secondary:    #8b8b9a;
-  --text-muted:        #52525e;
-  --text-nav:          #8b8b9a;
-  --text-nav-active:   #f1f1f3;
+  /* ── Typography (Reading Layer) ── */
+  --text-primary:      #F8FAFC;   /* Slate 50 — crisp off-white, no glare */
+  --text-secondary:    #94A3B8;   /* Slate 400 — readable hierarchy */
+  --text-muted:        #475569;   /* Slate 600 — subtle */
+  --text-nav:          #94A3B8;
+  --text-nav-active:   #F8FAFC;
 
-  --accent-blue:       #3b82f6;
-  --accent-blue-light: rgba(59,130,246,0.12);
-  --accent-blue-hover: #2563eb;
+  /* ── Borders ── */
+  --border:            #334155;   /* Slate 700 — structure without clutter */
+  --border-card:       #334155;
 
-  --border:            #27272f;
-  --border-card:       #222228;
+  /* ── Accents (Action Layer) ── */
+  --accent-blue:       #3B82F6;   /* Blue 500 — primary brand/action */
+  --accent-blue-light: rgba(59,130,246,0.15);
+  --accent-blue-hover: #2563EB;
 
-  --green:             #22c55e;
-  --green-bg:          rgba(34,197,94,0.12);
-  --red:               #ef4444;
-  --red-bg:            rgba(239,68,68,0.12);
-  --amber:             #f59e0b;
+  --green:             #10B981;   /* Emerald 500 — positive trend */
+  --green-bg:          rgba(16,185,129,0.12);
+  --red:               #F43F5E;   /* Rose 500 — negative trend, softer than pure red */
+  --red-bg:            rgba(244,63,94,0.12);
+  --amber:             #F59E0B;
   --amber-bg:          rgba(245,158,11,0.12);
-  --gray-badge:        #52525e;
-  --gray-badge-bg:     #1e1e24;
+  --gray-badge:        #475569;
+  --gray-badge-bg:     #1E293B;
 
+  /* ── Shape ── */
   --radius-sm:  6px;
   --radius-md:  10px;
   --radius-lg:  12px;
   --radius-xl:  16px;
 
+  /* ── Elevation ── */
   --shadow-card: 0 1px 3px rgba(0,0,0,0.4);
   --shadow-md:   0 4px 20px rgba(0,0,0,0.5);
   --shadow-btn:  0 2px 8px rgba(59,130,246,0.3);
 
   --sidebar-width: 180px;
-
   --transition: 0.15s ease;
 }
 
@@ -960,13 +965,13 @@ ul {
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  background: #222228;
-  border: 1px solid #2e2e36;
+  background: #334155;   /* Slate 700 */
+  border: 1px solid #475569;  /* Slate 600 */
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: #94A3B8;  /* Slate 400 */
 }
 
 .ov-stat-label {
@@ -1272,8 +1277,8 @@ ul {
   flex-shrink: 0;
 }
 
-.dot-today    { background: #6b7280; }
-.dot-yesterday { background: #3a3a45; }
+.dot-today    { background: rgba(59,130,246,0.8); }  /* Blue 500 */
+.dot-yesterday { background: #334155; }              /* Slate 700 */
 
 .ov-revenue-legend-label {
   font-size: 0.72rem;
@@ -1345,17 +1350,16 @@ ul {
 }
 
 .ov-bar-today {
-  background: #4b5563;
-  opacity: 0.9;
+  background: rgba(59,130,246,0.8);  /* Blue 500 @ 80% */
+  transition: opacity var(--transition);
 }
 
 .ov-bar-today:hover {
-  opacity: 1;
-  background: #6b7280;
+  background: rgba(59,130,246,1);
 }
 
 .ov-bar-yesterday {
-  background: #2a2a35;
+  background: rgba(59,130,246,0.2);  /* Blue 500 @ 20% */
 }
 
 .ov-chart-labels {
@@ -1470,12 +1474,12 @@ ul {
 .ov-peak-bar {
   flex: 1;
   border-radius: 2px 2px 0 0;
-  background: #2a2a35;
+  background: #334155;  /* Slate 700 */
   min-height: 4px;
 }
 
 .ov-peak-bar-hi {
-  background: #4b5563;
+  background: rgba(59,130,246,0.6);  /* Blue 500 @ 60% */
 }
 
 /* Stats / Orders section */
