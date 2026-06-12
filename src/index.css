@@ -1,40 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ─── Design Tokens — Eye-Comfort Dark Palette ───────────────── */
+/* ─── Design Tokens — Midnight Indigo Theme ─────────────────── */
 :root {
-  /* ── Backgrounds (Depth Layer) ── */
-  --bg-app:            #0F172A;   /* Slate 900 — deep navy-gray, avoids pure black */
-  --bg-sidebar:        #0F172A;   /* same depth as app */
-  --bg-card:           #1E293B;   /* Slate 800 — lifts cards clearly off background */
-  --bg-card-hover:     #334155;   /* Slate 700 — clear interactive feedback */
-  --bg-input:          #1E293B;
-  --bg-table-row:      #1E293B;
-  --bg-table-row-hover:#334155;
+  /* ── Backgrounds (Deep Space Layer) ── */
+  --bg-app:            #0C0C18;   /* Deep indigo-black — avoids pure black */
+  --bg-sidebar:        #0E0E1C;   /* Sidebar — same depth, slight variation */
+  --bg-card:           #161626;   /* Elevated dark surface with indigo undertone */
+  --bg-card-hover:     #1E1E32;   /* Hover — clear but soft */
+  --bg-input:          #161626;
+  --bg-table-row:      #161626;
+  --bg-table-row-hover:#1E1E32;
 
-  /* ── Typography (Reading Layer) ── */
-  --text-primary:      #F8FAFC;   /* Slate 50 — crisp off-white, no glare */
-  --text-secondary:    #94A3B8;   /* Slate 400 — readable hierarchy */
-  --text-muted:        #475569;   /* Slate 600 — subtle */
-  --text-nav:          #94A3B8;
-  --text-nav-active:   #F8FAFC;
+  /* ── Typography ── */
+  --text-primary:      #F9FAFB;   /* Near-white — crisp without glare */
+  --text-secondary:    #8892A4;   /* Muted blue-gray — readable hierarchy */
+  --text-muted:        #3D4460;   /* Very subtle */
+  --text-nav:          #8892A4;
+  --text-nav-active:   #F9FAFB;
 
-  /* ── Borders ── */
-  --border:            #334155;   /* Slate 700 — structure without clutter */
-  --border-card:       #334155;
+  /* ── Borders — barely visible ── */
+  --border:            rgba(255,255,255,0.07);
+  --border-card:       rgba(255,255,255,0.06);
 
-  /* ── Accents (Action Layer) ── */
-  --accent-blue:       #3B82F6;   /* Blue 500 — primary brand/action */
-  --accent-blue-light: rgba(59,130,246,0.15);
-  --accent-blue-hover: #2563EB;
+  /* ── Accents ── */
+  --accent-blue:       #6366F1;   /* Indigo 500 — primary brand/active */
+  --accent-blue-light: rgba(99,102,241,0.15);
+  --accent-blue-hover: #4F46E5;   /* Indigo 600 */
 
-  --green:             #10B981;   /* Emerald 500 — positive trend */
+  --green:             #10B981;   /* Emerald 500 */
   --green-bg:          rgba(16,185,129,0.12);
-  --red:               #F43F5E;   /* Rose 500 — negative trend, softer than pure red */
+  --red:               #F43F5E;   /* Rose 500 */
   --red-bg:            rgba(244,63,94,0.12);
   --amber:             #F59E0B;
   --amber-bg:          rgba(245,158,11,0.12);
-  --gray-badge:        #475569;
-  --gray-badge-bg:     #1E293B;
+  --gray-badge:        #3D4460;
+  --gray-badge-bg:     #161626;
 
   /* ── Shape ── */
   --radius-sm:  6px;
@@ -43,9 +43,9 @@
   --radius-xl:  16px;
 
   /* ── Elevation ── */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:   0 4px 20px rgba(0,0,0,0.5);
-  --shadow-btn:  0 2px 8px rgba(59,130,246,0.3);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-md:   0 8px 32px rgba(0,0,0,0.6);
+  --shadow-btn:  0 2px 12px rgba(99,102,241,0.35);
 
   --sidebar-width: 180px;
   --transition: 0.15s ease;
@@ -965,13 +965,13 @@ ul {
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  background: #334155;   /* Slate 700 */
-  border: 1px solid #475569;  /* Slate 600 */
+  background: #1E1E32;              /* Indigo-tinted dark */
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #94A3B8;  /* Slate 400 */
+  color: #8892A4;
 }
 
 .ov-stat-label {
@@ -1277,8 +1277,8 @@ ul {
   flex-shrink: 0;
 }
 
-.dot-today    { background: rgba(59,130,246,0.8); }  /* Blue 500 */
-.dot-yesterday { background: #334155; }              /* Slate 700 */
+.dot-today    { background: rgba(99,102,241,0.8); }   /* Indigo 500 */
+.dot-yesterday { background: rgba(255,255,255,0.1); }  /* Subtle white */
 
 .ov-revenue-legend-label {
   font-size: 0.72rem;
@@ -1350,16 +1350,16 @@ ul {
 }
 
 .ov-bar-today {
-  background: rgba(59,130,246,0.8);  /* Blue 500 @ 80% */
+  background: rgba(99,102,241,0.75);   /* Indigo 500 @ 75% */
   transition: opacity var(--transition);
 }
 
 .ov-bar-today:hover {
-  background: rgba(59,130,246,1);
+  background: rgba(99,102,241,1);
 }
 
 .ov-bar-yesterday {
-  background: rgba(59,130,246,0.2);  /* Blue 500 @ 20% */
+  background: rgba(99,102,241,0.18);  /* Indigo 500 @ 18% */
 }
 
 .ov-chart-labels {
@@ -1474,12 +1474,12 @@ ul {
 .ov-peak-bar {
   flex: 1;
   border-radius: 2px 2px 0 0;
-  background: #334155;  /* Slate 700 */
+  background: #1E1E32;
   min-height: 4px;
 }
 
 .ov-peak-bar-hi {
-  background: rgba(59,130,246,0.6);  /* Blue 500 @ 60% */
+  background: rgba(99,102,241,0.55);  /* Indigo 500 @ 55% */
 }
 
 /* Stats / Orders section */
