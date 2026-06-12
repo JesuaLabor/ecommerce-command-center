@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GET /api/v1/dashboard — API Contract",
+  "version": "1.0.0",
+
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/dashboard",
+    "query_params": {
+      "merchant_id": { "type": "string", "required": true, "example": "merchant_9021" },
+      "date": { "type": "string", "format": "YYYY-MM-DD", "required": true, "example": "2026-06-12" }
+    },
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Accept": "application/json"
+    }
+  },
+
+  "response_envelope": {
+    "request_id": "string — unique ID for tracing/debugging",
+    "generated_at": "ISO 8601 timestamp — when aggregator produced this response",
+    "merchant_id": "string",
+    "date": "YYYY-MM-DD",
+    "platforms": {
+      "<platform_key>": {
+        "status": "\"ok\" | \"stale\" | \"unavailable\"",
+        "last_synced": "ISO 8601 timestamp | null",
+        "staleness_minutes": "integer (only present when status = stale)",
+        "data": "object | null (null when status = unavailable)",
+        "error": "object | null (only present when status = unavailable)"
+      }
+    }
+  },
+
+  "scenario_1_both_healthy": {
+    "description": "Both Shopify and TikTok Shop are responding normally.",
+    "http_status": 200,
+    "body": {
+      "request_id": "req_abc123",
+      "generated_at": "2026-06-12T01:00:00Z",
+      "merchant_id": "merchant_9021",
+      "date": "2026-06-12",
+      "platforms": {
+        "shopify": {
+          "status": "ok",
+          "last_synced": "2026-06-12T00:59:00Z",
+          "data": {
+            "revenue": { "amount": 12480.50, "currency": "USD" },
+            "orders": { "total": 214, "pending": 18, "fulfilled": 182, "cancelled": 14 },
+            "units_sold": 387,
+            "inventory": {
+              "total_skus": 52,
+              "low_stock": [
+                { "sku": "SHIRT-BLK-M", "name": "Classic Black Tee (M)", "stock": 3, "threshold": 5 }
+              ],
+              "out_of_stock": [
+                { "sku": "SOCK-GRY-L", "name": "Grey Crew Socks (L)", "stock": 0 }
+              ]
+            },
+            "recent_orders": [
+              { "id": "SH-10091", "customer": "Maria Santos", "items": 2, "total": 58.99, "status": "fulfilled", "time": "09:14 AM" }
+            ]
+          }
+        },
+        "tiktok": {
+          "status": "ok",
+          "last_synced": "2026-06-12T00:52:00Z",
+          "data": {
+            "revenue": { "amount": 4320.00, "currency": "USD" },
+            "orders": { "total": 89, "pending": 11, "fulfilled": 74, "cancelled": 4 },
+            "units_sold": 143,
+            "inventory": {
+              "total_skus": 18,
+              "low_stock": [
+                { "sku": "TTSHIRT-RED-S", "name": "Viral Red Tee (S)", "stock": 4, "threshold": 5 }
+              ],
+              "out_of_stock": []
+            },
+            "recent_orders": [
+              { "id": "TT-5521", "customer": "Kyla Tan", "items": 1, "total": 39.99, "status": "pending", "time": "09:05 AM" }
+            ]
+          }
+        }
+      }
+    }
+  },
+
+  "scenario_2_tiktok_stale": {
+    "description": "TikTok data is older than the 15-minute threshold. Last-known data is still returned — never blank. HTTP status remains 200 (partial success is NOT a server error).",
+    "http_status": 200,
+    "body": {
+      "request_id": "req_xyz789",
+      "generated_at": "2026-06-12T01:00:00Z",
+      "merchant_id": "merchant_9021",
+      "date": "2026-06-12",
+      "platforms": {
+        "shopify": {
+          "status": "ok",
+          "last_synced": "2026-06-12T00:59:00Z",
+          "data": { "revenue": { "amount": 12480.50, "currency": "USD" }, "orders": { "total": 214 }, "units_sold": 387 }
+        },
+        "tiktok": {
+          "status": "stale",
+          "last_synced": "2026-06-12T00:42:00Z",
+          "staleness_minutes": 18,
+          "data": {
+            "revenue": { "amount": 4320.00, "currency": "USD" },
+            "orders": { "total": 89 },
+            "units_sold": 143,
+            "inventory": { "total_skus": 18, "low_stock": [], "out_of_stock": [] },
+            "recent_orders": []
+          }
+        }
+      }
+    }
+  },
+
+  "scenario_3_tiktok_unavailable": {
+    "description": "TikTok API timed out or returned 5xx. No data is returned for TikTok. HTTP status is still 200 — Shopify data is fully usable. The error object communicates the failure reason for logging/display.",
+    "http_status": 200,
+    "body": {
+      "request_id": "req_err001",
+      "generated_at": "2026-06-12T01:00:00Z",
+      "merchant_id": "merchant_9021",
+      "date": "2026-06-12",
+      "platforms": {
+        "shopify": {
+          "status": "ok",
+          "last_synced": "2026-06-12T00:59:00Z",
+          "data": { "revenue": { "amount": 12480.50, "currency": "USD" }, "orders": { "total": 214 }, "units_sold": 387 }
+        },
+        "tiktok": {
+          "status": "unavailable",
+          "last_synced": null,
+          "data": null,
+          "error": {
+            "code": "UPSTREAM_TIMEOUT",
+            "message": "TikTok Shop API did not respond within the 10s timeout. Retrying automatically.",
+            "http_status": 504
+          }
+        }
+      }
+    }
+  },
+
+  "status_values": {
+    "ok": "Data is fresh and within the staleness threshold (< 15 min).",
+    "stale": "Data was fetched successfully but exceeds the 15-minute staleness threshold. Last-known data is returned in `data`.",
+    "unavailable": "Upstream API timed out or returned 5xx. `data` is null. `error` object is populated."
+  },
+
+  "design_decisions": {
+    "why_200_for_partial_failure": "Returning HTTP 200 for partial platform failure prevents client-side error handling from blanking the entire dashboard. Platform-level failure is communicated inside the response envelope via `status` fields.",
+    "why_last_known_data_for_stale": "Stale data is infinitely more useful to a merchant than an empty section. We surface it with a clear timestamp so they can make informed decisions.",
+    "why_single_endpoint": "One endpoint reduces client complexity, allows the aggregator to fan out to platforms in parallel, and provides a single cache key per merchant+date."
+  }
+}
