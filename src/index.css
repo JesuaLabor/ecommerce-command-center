@@ -1,53 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap');
 
-/* ─── Design Tokens — Command Center Dark ──────────────────── */
+/* ─── Design Tokens — Style Guide ───────────────────────────── */
 :root {
-  /* ── Backgrounds — deep navy-charcoal depth layers ── */
-  --bg-app:            #0E1117;   /* Very dark neutral — not pure black, has depth */
-  --bg-sidebar:        #0B0F19;   /* Slightly cooler/deeper than app */
-  --bg-card:           #1A2236;   /* Elevated surface — clearly lifts off app bg */
-  --bg-card-hover:     #202C42;   /* Hover state — clear, not jarring */
-  --bg-input:          #1A2236;
-  --bg-table-row:      #1A2236;
-  --bg-table-row-hover:#202C42;
+  /* ── Backgrounds — based on #080C08 with green undertone depth ── */
+  --bg-app: #080C08;
+  /* Style guide base — near-black, slight green tint */
+  --bg-sidebar: #0C100C;
+  /* Sidebar — lifted slightly */
+  --bg-card: #111611;
+  /* Cards — clearly elevated off app bg */
+  --bg-card-hover: #182018;
+  /* Hover/active state */
+  --bg-input: #111611;
+  --bg-table-row: #111611;
+  --bg-table-row-hover: #182018;
 
-  /* ── Typography — off-white hierarchy, avoid pure white glare ── */
-  --text-primary:      #E8EDF5;   /* Crisp off-white — readable without glare */
-  --text-secondary:    #6B7A90;   /* Muted blue-gray — clear hierarchy */
-  --text-muted:        #2E3A4E;   /* Very subtle — placeholder, axis labels */
-  --text-nav:          #6B7A90;
-  --text-nav-active:   #E8EDF5;
+  /* ── Typography — #FFFFFF pure white ── */
+  --text-primary: #FFFFFF;
+  --text-secondary: #8A9E8A;
+  /* muted greenish-gray */
+  --text-muted: #3A4A3A;
+  /* very subtle */
+  --text-nav: #8A9E8A;
+  --text-nav-active: #FFFFFF;
 
-  /* ── Borders — barely-visible structure ── */
-  --border:            rgba(255,255,255,0.08);
-  --border-card:       rgba(255,255,255,0.07);
+  /* ── Borders — teal-tinted barely-visible ── */
+  --border: rgba(48, 240, 179, 0.1);
+  --border-card: rgba(48, 240, 179, 0.08);
 
-  /* ── Brand & Semantic Accents ── */
-  --accent-blue:       #4F8EF7;   /* Bright blue — trustworthy, pops on dark */
-  --accent-blue-light: rgba(79,142,247,0.12);
-  --accent-blue-hover: #3B7CF0;
+  /* ── Accents — Style Guide ── */
+  --accent-blue: #306FFF;
+  /* Primary brand blue */
+  --accent-blue-light: rgba(48, 111, 255, 0.15);
+  --accent-blue-hover: #1A5AE8;
 
-  --green:             #34D399;   /* Emerald 400 — positive trend */
-  --green-bg:          rgba(52,211,153,0.12);
-  --red:               #F87171;   /* Rose 400 — softer than pure red */
-  --red-bg:            rgba(248,113,113,0.12);
-  --amber:             #FBBF24;   /* Amber 400 — warnings */
-  --amber-bg:          rgba(251,191,36,0.12);
-  --gray-badge:        #3A4A60;
-  --gray-badge-bg:     #1A2236;
+  --green: #30F0B3;
+  /* Teal — positive trend */
+  --green-bg: rgba(48, 240, 179, 0.12);
+  --red: #FF4D6A;
+  /* Soft red — negative trend */
+  --red-bg: rgba(255, 77, 106, 0.12);
+  --amber: #FAD670;
+  /* Gold — warnings */
+  --amber-bg: rgba(250, 214, 112, 0.12);
+  --gray-badge: #3A4A3A;
+  --gray-badge-bg: #111611;
 
   /* ── Shape ── */
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  12px;
-  --radius-xl:  16px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
-  /* ── Elevation — glass card effect ── */
-  --shadow-card: 0 0 0 1px rgba(255,255,255,0.07),
-                 inset 0 1px 0 rgba(255,255,255,0.08),
-                 0 4px 20px rgba(0,0,0,0.5);
-  --shadow-md:   0 8px 32px rgba(0,0,0,0.6);
-  --shadow-btn:  0 2px 12px rgba(79,142,247,0.4);
+  /* ── Elevation ── */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(48, 240, 179, 0.05);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --shadow-btn: 0 2px 12px rgba(48, 111, 255, 0.4);
 
   --sidebar-width: 180px;
   --transition: 0.15s ease;
@@ -185,7 +193,7 @@ ul {
   white-space: nowrap;
 }
 
-/* ── Nav ── */
+/* Nav */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -197,33 +205,27 @@ ul {
   align-items: center;
   gap: 9px;
   width: 100%;
-  /* extra left padding to compensate for the 2px active border */
-  padding: 8px 10px 8px 10px;
-  border-left: 2px solid transparent;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-nav);
   cursor: pointer;
-  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  transition: background var(--transition), color var(--transition);
   text-align: left;
   background: none;
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
+  border: none;
 }
 
 .nav-item:hover {
-  background: rgba(79,142,247,0.07);
+  background: var(--bg-card);
   color: var(--text-primary);
-  border-left-color: rgba(79,142,247,0.3);
 }
 
 .nav-item.active {
-  background: rgba(79,142,247,0.12);
+  background: var(--bg-card);
   color: var(--text-primary);
   font-weight: 600;
-  border-left-color: var(--accent-blue);
 }
 
 .nav-icon {
@@ -295,8 +297,18 @@ ul {
 
 .demo-label {
   font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.demo-hint {
+  font-size: 0.7rem;
   color: var(--text-muted);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 360px;
 }
 
 .main-topbar-right {
@@ -989,13 +1001,14 @@ ul {
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  background: rgba(79,142,247,0.08);
-  border: 1px solid rgba(79,142,247,0.15);
+  background: #182018;
+  /* card-hover tint */
+  border: 1px solid rgba(48, 240, 179, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--accent-blue);
+  color: #8A9E8A;
 }
 
 .ov-stat-label {
@@ -1301,8 +1314,16 @@ ul {
   flex-shrink: 0;
 }
 
-.dot-today    { background: rgba(79,142,247,0.9); }   /* Accent blue */
-.dot-yesterday { background: rgba(255,255,255,0.15); } /* Subtle white */
+.dot-today {
+  background: rgba(48, 111, 255, 0.9);
+}
+
+/* #306FFF */
+.dot-yesterday {
+  background: rgba(48, 240, 179, 0.25);
+}
+
+/* #30F0B3 subtle */
 
 .ov-revenue-legend-label {
   font-size: 0.72rem;
@@ -1374,16 +1395,18 @@ ul {
 }
 
 .ov-bar-today {
-  background: rgba(79,142,247,0.75);
-  transition: background var(--transition);
+  background: rgba(48, 111, 255, 0.75);
+  /* #306FFF @ 75% */
+  transition: opacity var(--transition);
 }
 
 .ov-bar-today:hover {
-  background: rgba(79,142,247,1);
+  background: rgba(48, 111, 255, 1);
 }
 
 .ov-bar-yesterday {
-  background: rgba(79,142,247,0.18);
+  background: rgba(48, 111, 255, 0.18);
+  /* #306FFF @ 18% */
 }
 
 .ov-chart-labels {
@@ -1498,12 +1521,13 @@ ul {
 .ov-peak-bar {
   flex: 1;
   border-radius: 2px 2px 0 0;
-  background: rgba(255,255,255,0.06);
+  background: #182018;
   min-height: 4px;
 }
 
 .ov-peak-bar-hi {
-  background: rgba(79,142,247,0.6);
+  background: rgba(48, 240, 179, 0.5);
+  /* #30F0B3 @ 50% */
 }
 
 /* Stats / Orders section */

@@ -71,7 +71,7 @@ export default function App() {
         {/* Top-right actions bar */}
         <div className="main-topbar">
           <div className="main-topbar-left">
-            <label className="demo-label">🎛 Demo:</label>
+            <label className="demo-label">🎛 Demo Mode:</label>
             <select
               id="scenario-select"
               className="scenario-select"
@@ -84,6 +84,7 @@ export default function App() {
               <option value="shopify_down">🔴 Shopify Down</option>
               <option value="both_down">🔴🔴 Both Down</option>
             </select>
+            <span className="demo-hint">Switch scenarios to see how the dashboard handles partial data failures.</span>
           </div>
           <div className="main-topbar-right">
             <button className="topbar-icon-btn" aria-label="Notifications" id="btn-notifications">
