@@ -37,22 +37,24 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
   return (
     <div className="ov-stat-card" id={`ov-stat-${id}`}>
 
-      {/* ── Header: icon chip + label + ellipsis ── */}
+      {/* ── Header: plain icon + label + ellipsis ── */}
       <div className="ov-stat-header">
         <span className="ov-stat-icon">{icon}</span>
         <span className="ov-stat-label">{label}</span>
         <button className="ov-menu-btn" aria-label="Options">⋯</button>
       </div>
 
-      {/* ── Body: value vertically centered ── */}
+      {/* ── Body: large value ── */}
       <div className="ov-stat-body">
         <div className="ov-stat-value">{value}</div>
       </div>
 
-      {/* ── Footer: trend % then warning beneath ── */}
+      {/* ── Footer: arrow-circle badge + text ── */}
       <div className="ov-stat-footer">
         <div className={`ov-stat-delta ${up ? "delta-up" : "delta-down"}`}>
-          <span className="ov-delta-dot" />
+          <span className="ov-delta-circle">
+            {up ? "↑" : "↓"}
+          </span>
           {delta} since last month
         </div>
         {extra && <div className="ov-stat-extra">{extra}</div>}
@@ -61,6 +63,7 @@ function StatCard({ id, icon, label, value, delta, up, extra }) {
     </div>
   );
 }
+
 
 /**
  * PlatformStatusStrip — shown below stat cards when any platform is not "ok".
