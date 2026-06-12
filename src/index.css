@@ -15,13 +15,11 @@
   --bg-table-row: #111611;
   --bg-table-row-hover: #182018;
 
-  /* ── Typography — #FFFFFF pure white ── */
-  --text-primary: #FFFFFF;
-  --text-secondary: #8A9E8A;
-  /* muted greenish-gray */
-  --text-muted: #3A4A3A;
-  /* very subtle */
-  --text-nav: #8A9E8A;
+  /* ── Typography — clear hierarchy on dark green bg ── */
+  --text-primary:    #FFFFFF;    /* Pure white — titles, values */
+  --text-secondary:  #9DB89D;    /* Readable muted green-gray — labels, subtitles */
+  --text-muted:      #6B8C7A;    /* Visible but quiet — icons, hints, chart labels */
+  --text-nav:        #9DB89D;
   --text-nav-active: #FFFFFF;
 
   /* ── Borders — teal-tinted barely-visible ── */
@@ -43,8 +41,8 @@
   --amber: #FAD670;
   /* Gold — warnings */
   --amber-bg: rgba(250, 214, 112, 0.12);
-  --gray-badge: #3A4A3A;
-  --gray-badge-bg: #111611;
+  --gray-badge:    #7A9A8A;
+  --gray-badge-bg: #1A281A;
 
   /* ── Shape ── */
   --radius-sm: 6px;
@@ -235,7 +233,7 @@ ul {
   width: 16px;
   flex-shrink: 0;
   color: currentColor;
-  opacity: 0.7;
+  opacity: 1;   /* was 0.7 — too faint on dark bg */
 }
 
 .nav-item.active .nav-icon,
@@ -1001,14 +999,13 @@ ul {
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  background: #182018;
-  /* card-hover tint */
-  border: 1px solid rgba(48, 240, 179, 0.12);
+  background: var(--bg-card-hover);          /* uses token, not hardcoded */
+  border: 1px solid rgba(48, 240, 179, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #8A9E8A;
+  color: var(--text-secondary);              /* readable on dark bg */
 }
 
 .ov-stat-label {
@@ -1521,7 +1518,7 @@ ul {
 .ov-peak-bar {
   flex: 1;
   border-radius: 2px 2px 0 0;
-  background: #182018;
+  background: var(--bg-card-hover);  /* uses token, not hardcoded */
   min-height: 4px;
 }
 
@@ -1573,9 +1570,11 @@ ul {
 }
 
 .ov-spark-icon {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);   /* was --text-muted @ 0.8 — nearly invisible */
+  opacity: 1;
 }
 
 .ov-spark-label {
