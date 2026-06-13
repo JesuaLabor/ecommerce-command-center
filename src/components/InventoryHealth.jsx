@@ -28,7 +28,13 @@ const IconAlert = () => (
 );
 const IconBox = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />
+    <polygon points="12 22.08 12 12 3 6.92 3 17.08 12 22.08" />
+    <polygon points="21 17.08 21 6.92 12 12 12 22.08 21 17.08" />
+    <polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
+    <line x1="12" y1="12" x2="20.15" y2="7.39" />
+    <line x1="3.85" y1="7.39" x2="12" y2="12" />
   </svg>
 );
 const IconCheck = () => (
