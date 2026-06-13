@@ -16,7 +16,7 @@ export default function Header({ merchantName, date, scenario, onScenarioChange 
         <div className="header-brand">
           <div className="brand-icon">⚡</div>
           <div>
-            <h1 className="brand-name">Command Center</h1>
+            <h1 className="brand-name">Intelligence Dashboard</h1>
             <p className="brand-sub">eCommerce Intelligence Dashboard</p>
           </div>
         </div>

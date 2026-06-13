@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ============================================================
-#  run_project.sh — eCommerce Command Center
+#  run_project.sh — eCommerce Intelligence Dashboard
 #  Usage: ./run_project.sh [--build | --preview | --help]
 # ============================================================
 
@@ -18,7 +18,7 @@ RESET='\033[0m'
 # ── Banner ───────────────────────────────────────────────────
 echo -e ""
 echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════════╗${RESET}"
-echo -e "${CYAN}${BOLD}║   eCommerce Command Center – Dev Launcher    ║${RESET}"
+echo -e "${CYAN}${BOLD}║   eCommerce Intelligence Dashboard – Dev Launcher    ║${RESET}"
 echo -e "${CYAN}${BOLD}╚══════════════════════════════════════════════╝${RESET}"
 echo -e ""
 

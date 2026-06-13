@@ -1,4 +1,4 @@
-# eCommerce Command Center
+# eCommerce Intelligence Dashboard
 
 A unified analytics dashboard for merchants selling on both **Shopify** and **TikTok Shop**. Built as a design/engineering assignment demonstrating component architecture, API contract design, and graceful partial-failure handling.
 

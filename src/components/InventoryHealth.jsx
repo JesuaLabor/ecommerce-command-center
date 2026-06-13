@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 /**
  * InventoryHealth — redesigned full-page Inventory dashboard.
@@ -84,38 +84,57 @@ function StatPill({ icon, label, value, variant }) {
 
 // ─── Main Component ───────────────────────────────────────────────
 export default function InventoryHealth({ platforms }) {
-  const [filter, setFilter]   = useState("all");   // "all" | "shopify" | "tiktok"
-  const [search, setSearch]   = useState("");
-  const [sort, setSort]       = useState("status"); // "status" | "name" | "stock"
+  const [filter, setFilter] = useState("all");   // "all" | "shopify" | "tiktok"
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("status"); // "status" | "name" | "stock"
   const [showAll, setShowAll] = useState(false);
 
-  const shopifyOk  = platforms.shopify.status !== "unavailable";
-  const tiktokOk   = platforms.tiktok.status  !== "unavailable";
-  const shopifyInv = shopifyOk ? platforms.shopify.data?.inventory : null;
-  const tiktokInv  = tiktokOk  ? platforms.tiktok.data?.inventory  : null;
+  // local copy of inventory list to support mutations/updates
+  const [localInventory, setLocalInventory] = useState({
+    shopifyProducts: [],
+    tiktokProducts: [],
+    shopifyHealthy: 0,
+    tiktokHealthy: 0
+  });
 
-  // ── Build unified product list ──────────────────────────────────
-  const allProducts = useMemo(() => {
+  // Restock states
+  const [restockItem, setRestockItem] = useState(null); // item object being restocked
+  const [restockQty, setRestockQty]   = useState(10);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const shopifyOk = platforms.shopify.status !== "unavailable";
+  const tiktokOk = platforms.tiktok.status !== "unavailable";
+  const shopifyInv = shopifyOk ? platforms.shopify.data?.inventory : null;
+  const tiktokInv = tiktokOk ? platforms.tiktok.data?.inventory : null;
+
+  // Initialize state from props
+  useEffect(() => {
     const shopifyProducts = [
-      ...(shopifyInv?.out_of_stock ?? []).map(i => ({ ...i, source: "Shopify", stock: 0,        status: "out"     })),
-      ...(shopifyInv?.low_stock    ?? []).map(i => ({ ...i, source: "Shopify", stock: i.stock,  status: "low"     })),
+      ...(shopifyInv?.out_of_stock ?? []).map(i => ({ ...i, source: "Shopify", stock: 0, status: "out" })),
+      ...(shopifyInv?.low_stock ?? []).map(i => ({ ...i, source: "Shopify", stock: i.stock, status: "low" })),
     ];
     const tiktokProducts = [
-      ...(tiktokInv?.out_of_stock  ?? []).map(i => ({ ...i, source: "TikTok",  stock: 0,        status: "out"     })),
-      ...(tiktokInv?.low_stock     ?? []).map(i => ({ ...i, source: "TikTok",  stock: i.stock,  status: "low"     })),
+      ...(tiktokInv?.out_of_stock ?? []).map(i => ({ ...i, source: "TikTok", stock: 0, status: "out" })),
+      ...(tiktokInv?.low_stock ?? []).map(i => ({ ...i, source: "TikTok", stock: i.stock, status: "low" })),
     ];
-    // Estimate healthy items from total_skus minus critical
+
     const shopifyHealthy = Math.max(0, (shopifyInv?.total_skus ?? 0) - shopifyProducts.length);
-    const tiktokHealthy  = Math.max(0, (tiktokInv?.total_skus  ?? 0) - tiktokProducts.length);
-    return { shopifyProducts, tiktokProducts, shopifyHealthy, tiktokHealthy };
-  }, [shopifyInv, tiktokInv]);
+    const tiktokHealthy = Math.max(0, (tiktokInv?.total_skus ?? 0) - tiktokProducts.length);
 
-  const { shopifyProducts, tiktokProducts, shopifyHealthy, tiktokHealthy } = allProducts;
+    setLocalInventory({
+      shopifyProducts,
+      tiktokProducts,
+      shopifyHealthy,
+      tiktokHealthy
+    });
+  }, [platforms, shopifyInv, tiktokInv]);
 
-  const criticalItems = [
-    ...(filter !== "tiktok" ? shopifyProducts : []),
-    ...(filter !== "shopify" ? tiktokProducts : []),
-  ];
+  const criticalItems = useMemo(() => {
+    return [
+      ...(filter !== "tiktok" ? localInventory.shopifyProducts : []),
+      ...(filter !== "shopify" ? localInventory.tiktokProducts : []),
+    ];
+  }, [localInventory, filter]);
 
   // ── Filter + search + sort ───────────────────────────────────────
   const displayed = useMemo(() => {
@@ -124,18 +143,73 @@ export default function InventoryHealth({ platforms }) {
       const q = search.toLowerCase();
       items = items.filter(i => i.name?.toLowerCase().includes(q) || i.sku?.toLowerCase().includes(q));
     }
-    if (sort === "name")   items = [...items].sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
-    if (sort === "stock")  items = [...items].sort((a, b) => a.stock - b.stock);
+    if (sort === "name") items = [...items].sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+    if (sort === "stock") items = [...items].sort((a, b) => a.stock - b.stock);
     if (sort === "status") items = [...items].sort((a, b) => (a.status === "out" ? 0 : 1) - (b.status === "out" ? 0 : 1));
     return items;
   }, [criticalItems, search, sort]);
 
-  const visibleItems   = showAll ? displayed : displayed.slice(0, 8);
-  const totalSKUs      = (shopifyInv?.total_skus ?? 0) + (tiktokInv?.total_skus ?? 0);
-  const outCount       = criticalItems.filter(i => i.status === "out").length;
-  const lowCount       = criticalItems.filter(i => i.status === "low").length;
-  const healthyCount   = shopifyHealthy + tiktokHealthy;
-  const healthyPct     = totalSKUs > 0 ? Math.round((healthyCount / totalSKUs) * 100) : 0;
+  const visibleItems = showAll ? displayed : displayed.slice(0, 8);
+  const totalSKUs = (shopifyInv?.total_skus ?? 0) + (tiktokInv?.total_skus ?? 0);
+  const outCount = criticalItems.filter(i => i.status === "out").length;
+  const lowCount = criticalItems.filter(i => i.status === "low").length;
+  const healthyCount = localInventory.shopifyHealthy + localInventory.tiktokHealthy;
+  const healthyPct = totalSKUs > 0 ? Math.round((healthyCount / totalSKUs) * 100) : 0;
+
+  const handleRestockSubmit = (e) => {
+    e.preventDefault();
+    if (!restockItem) return;
+
+    const qty = parseInt(restockQty, 10);
+    if (isNaN(qty) || qty <= 0) return;
+
+    const source = restockItem.source;
+    const sku = restockItem.sku;
+    const isShopify = source === "Shopify";
+
+    setLocalInventory((prev) => {
+      const targetList = isShopify ? prev.shopifyProducts : prev.tiktokProducts;
+      let newShopifyHealthy = prev.shopifyHealthy;
+      let newTiktokHealthy = prev.tiktokHealthy;
+
+      const updatedList = targetList.map((item) => {
+        if (item.sku === sku) {
+          const newStock = item.stock + qty;
+          const threshold = item.threshold ?? 5; 
+          const newStatus = stockStatus(newStock, threshold);
+          return { ...item, stock: newStock, status: newStatus };
+        }
+        return item;
+      });
+
+      const healthyItems = updatedList.filter((i) => i.status === "healthy");
+      const remainingCritical = updatedList.filter((i) => i.status !== "healthy");
+
+      if (isShopify) {
+        newShopifyHealthy += healthyItems.length;
+        return {
+          ...prev,
+          shopifyProducts: remainingCritical,
+          shopifyHealthy: newShopifyHealthy,
+        };
+      } else {
+        newTiktokHealthy += healthyItems.length;
+        return {
+          ...prev,
+          tiktokProducts: remainingCritical,
+          tiktokHealthy: newTiktokHealthy,
+        };
+      }
+    });
+
+    setToastMessage(`Successfully ordered restock of +${qty} for ${restockItem.name || sku}`);
+    setRestockItem(null);
+    setRestockQty(10);
+
+    setTimeout(() => {
+      setToastMessage("");
+    }, 3000);
+  };
 
   return (
     <section className="invp-root" aria-label="Inventory Management">
@@ -144,18 +218,18 @@ export default function InventoryHealth({ platforms }) {
       {(!shopifyOk || !tiktokOk) && (
         <div className="invp-platform-notice">
           {!shopifyOk && <span className="sync-pill sync-pill-down">🔴 Shopify inventory unavailable</span>}
-          {!tiktokOk  && <span className="sync-pill sync-pill-down">🔴 TikTok inventory unavailable</span>}
+          {!tiktokOk && <span className="sync-pill sync-pill-down">🔴 TikTok inventory unavailable</span>}
         </div>
       )}
 
       {/* ── 1. KPI Summary Strip ── */}
       <div className="invp-kpi-strip">
-        <StatPill icon={<IconBox />}   label="Total SKUs"    value={totalSKUs}     variant="neutral" />
-        <StatPill icon={<IconCheck />} label="In Stock"      value={healthyCount}  variant="ok"      />
-        <StatPill icon={<IconAlert />} label="Low Stock"     value={lowCount}      variant="warn"    />
-        <StatPill icon={<IconAlert />} label="Out of Stock"  value={outCount}      variant="danger"  />
-        <StatPill icon={<IconBox />}   label="Shopify SKUs"  value={shopifyInv?.total_skus ?? "—"} variant="shopify" />
-        <StatPill icon={<IconBox />}   label="TikTok SKUs"   value={tiktokInv?.total_skus  ?? "—"} variant="tiktok"  />
+        <StatPill icon={<IconBox />} label="Total SKUs" value={totalSKUs} variant="neutral" />
+        <StatPill icon={<IconCheck />} label="In Stock" value={healthyCount} variant="ok" />
+        <StatPill icon={<IconAlert />} label="Low Stock" value={lowCount} variant="warn" />
+        <StatPill icon={<IconAlert />} label="Out of Stock" value={outCount} variant="danger" />
+        <StatPill icon={<IconBox />} label="Shopify SKUs" value={shopifyInv?.total_skus ?? "—"} variant="shopify" />
+        <StatPill icon={<IconBox />} label="TikTok SKUs" value={tiktokInv?.total_skus ?? "—"} variant="tiktok" />
       </div>
 
       {/* ── 2. Stock Health Bar ── */}
@@ -167,12 +241,12 @@ export default function InventoryHealth({ platforms }) {
           </span>
         </div>
         <div className="invp-health-track">
-          <div className="invp-health-seg invp-health-ok"    style={{ flex: healthyCount }} title={`${healthyCount} healthy`} />
-          <div className="invp-health-seg invp-health-low"   style={{ flex: lowCount  || 0.001 }} title={`${lowCount} low`} />
-          <div className="invp-health-seg invp-health-out"   style={{ flex: outCount  || 0.001 }} title={`${outCount} out`} />
+          <div className="invp-health-seg invp-health-ok" style={{ flex: healthyCount }} title={`${healthyCount} healthy`} />
+          <div className="invp-health-seg invp-health-low" style={{ flex: lowCount || 0.001 }} title={`${lowCount} low`} />
+          <div className="invp-health-seg invp-health-out" style={{ flex: outCount || 0.001 }} title={`${outCount} out`} />
         </div>
         <div className="invp-health-legend">
-          <span><span className="invp-legend-dot invp-legend-ok"  />In Stock ({healthyCount})</span>
+          <span><span className="invp-legend-dot invp-legend-ok" />In Stock ({healthyCount})</span>
           <span><span className="invp-legend-dot invp-legend-low" />Low Stock ({lowCount})</span>
           <span><span className="invp-legend-dot invp-legend-out" />Out of Stock ({outCount})</span>
         </div>
@@ -191,8 +265,8 @@ export default function InventoryHealth({ platforms }) {
               {t === "all" ? "All Platforms" : t === "shopify" ? "Shopify" : "TikTok Shop"}
               <span className="invp-tab-count">
                 {t === "all" ? criticalItems.length
-                  : t === "shopify" ? shopifyProducts.length
-                  : tiktokProducts.length}
+                  : t === "shopify" ? localInventory.shopifyProducts.length
+                    : localInventory.tiktokProducts.length}
               </span>
             </button>
           ))}
@@ -288,7 +362,14 @@ export default function InventoryHealth({ platforms }) {
 
                       {/* Action */}
                       <td>
-                        <button className="invp-action-btn" id={`inv-restock-${item.sku}`}>
+                        <button
+                          className="invp-action-btn"
+                          id={`inv-restock-${item.sku}`}
+                          onClick={() => {
+                            setRestockItem(item);
+                            setRestockQty(10);
+                          }}
+                        >
                           Restock →
                         </button>
                       </td>
@@ -309,6 +390,63 @@ export default function InventoryHealth({ platforms }) {
           </>
         )}
       </div>
+
+      {/* ── 5. Restock Modal ── */}
+      {restockItem && (
+        <div className="invp-modal-overlay" onClick={() => setRestockItem(null)}>
+          <div className="invp-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="invp-modal-header">
+              <h3 className="invp-modal-title">Restock Product</h3>
+              <button className="invp-modal-close" onClick={() => setRestockItem(null)}>×</button>
+            </div>
+            
+            <div className="invp-modal-info">
+              <div className="invp-modal-info-row">
+                <span className="invp-modal-info-label">Product Name</span>
+                <span className="invp-modal-info-val">{restockItem.name}</span>
+              </div>
+              <div className="invp-modal-info-row">
+                <span className="invp-modal-info-label">SKU</span>
+                <span className="invp-modal-info-val">{restockItem.sku}</span>
+              </div>
+              <div className="invp-modal-info-row">
+                <span className="invp-modal-info-label">Platform</span>
+                <span className="invp-modal-info-val">{restockItem.source}</span>
+              </div>
+              <div className="invp-modal-info-row">
+                <span className="invp-modal-info-label">Current Stock</span>
+                <span className="invp-modal-info-val">{restockItem.stock}</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleRestockSubmit} className="invp-modal-field">
+              <label className="invp-modal-field-label">Quantity to Add</label>
+              <input
+                type="number"
+                min="1"
+                className="invp-modal-input"
+                value={restockQty}
+                onChange={(e) => setRestockQty(e.target.value)}
+                autoFocus
+                id="restock-qty-input"
+              />
+              
+              <div className="invp-modal-actions">
+                <button type="button" className="btn-outline" onClick={() => setRestockItem(null)}>Cancel</button>
+                <button type="submit" className="btn-primary" id="btn-submit-restock">Submit Order</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── 6. Success Toast Notification ── */}
+      {toastMessage && (
+        <div className="invp-toast" role="alert" id="inv-toast">
+          <span className="invp-toast-icon">✓</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
     </section>
   );
