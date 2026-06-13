@@ -1,29 +1,34 @@
-# Assumptions
+# Assumptions & Design Rationale
 
-Documented assumptions made during design and implementation.
+This document outlines the core assumptions and architectural decisions made during the design and implementation of the **eCommerce Intelligence Dashboard**.
 
-## Data Freshness
-- **TikTok staleness threshold = 15 minutes.** Data older than 15 min is classified as `stale`. This is based on the typical TikTok Shop API polling lag of 5–15 minutes, with a 15-minute ceiling chosen as a conservative threshold that avoids false alarms.
-- **Stale ≠ wrong.** Stale data is surfaced to the merchant with a visible timestamp — it is never silently hidden. A merchant acting on 18-minute-old revenue data is better than a merchant acting on no data.
+---
 
-## Platform Status Definitions
-- `"ok"` → data fetched successfully AND age < 15 minutes
-- `"stale"` → data fetched successfully BUT age ≥ 15 minutes
-- `"unavailable"` → upstream API timed out (> 10s) OR returned 5xx
+## 1. Data Freshness & Sync Status
+- **TikTok Staleness Threshold = 15 Minutes**: TikTok Shop API lag typically ranges from 5–15 minutes. A 15-minute threshold represents a conservative line that avoids generating false alarms for normal replication delays.
+- **Stale ≠ Wrong**: Stale data is surfaced to the merchant with an amber-bordered alert banner and timestamp. It is never hidden. Showing data that is 18 minutes old is far more valuable to a merchant than hiding the entire panel.
+- **Platform Status Definitions**:
+  - `ok`: Data fetched successfully and age < 15 minutes.
+  - `stale`: Data fetched successfully but age ≥ 15 minutes.
+  - `unavailable`: Upstream platform API timed out (> 10s), returned 5xx, or is offline.
 
-## Merchant Context
-- Merchants are assumed to be **non-technical.** All error messaging uses plain English, avoids codes/stack traces, and frames issues as "we're on it" rather than "the API is broken."
-- Merchants check this dashboard daily, primarily in the morning. Optimizing for the **9 AM daily check** use case took priority over real-time trading-floor-style refresh rates.
+---
 
-## Data Scope
-- Dashboard covers a **single calendar date** (today by default).
-- Multi-date range analysis (trends, cohorts) is out of scope for this version.
-- **Customer Lifetime Value (CLV) is intentionally excluded** — see README trade-off decision.
+## 2. Inventory & Restock Flow
+- **Local State Mutation for Simulations**: The "Restock" action operates on a local component state copy inside `InventoryHealth.jsx`. This simulates an optimistic UI pattern: when a restock is ordered, metrics immediately recalculate (healthy counts rise, items transition out of critical tables, and a success toast fires). 
+- **Re-sync Reset**: It is assumed that the remote aggregator API is the single source of truth. Therefore, performing a manual "Sync Stores" or changing the Demo Mode dropdown resets the local restock state, pulling fresh data from the server.
+- **Client-Side Filtering & Sorting**: Because the critical inventory list is typically under 100 SKUs, search query matching, status sorting, and pagination are performed locally in-memory to deliver sub-millisecond responsiveness.
 
-## API Architecture
-- A **single aggregator endpoint** fans out to both platform APIs in parallel. The aggregator never fails the whole response due to a single platform error.
-- HTTP status 200 is returned even when TikTok is unavailable. Platform-level failures are communicated inside the response body, not via HTTP error codes.
+---
 
-## UI/UX
-- The dashboard **never blanks a section** due to platform failure. Every panel renders in some state (live, stale, or degraded placeholder).
-- Color coding: green = ok, amber = stale/delayed, red = unavailable. Red is never shown for staleness alone — only true unavailability.
+## 3. UI/UX & Transition Continuity
+- **Visual Stability (No Layout Shifts)**: Full-page skeleton loading screens are reserved exclusively for the initial app mount. Swapping the entire UI (including the Sidebar and Header) during incremental updates is jarring. 
+- **SaaS-Style Progress Indicators**: For subsequent scenario switches or refreshes, we assume a non-blocking top progress bar (GitHub/Shopify style) and slight main content dimming is the optimal pattern to communicate loading without layout shift.
+- **Plain-English Error Messaging**: Merchants are assumed to be business-focused, not software engineers. Error states focus on plain-English summaries ("TikTok is running a few minutes behind") rather than developer-centric API stack traces.
+
+---
+
+## 4. Scope & Aggregator API
+- **Single Calendar Date**: The dashboard focuses primarily on a single-day performance view (Today) to optimize for the **9 AM daily check** morning routine of merchants.
+- **Parallel Fan-out**: The aggregator API fans out requests to platform APIs in parallel. Platform failures are communicated inside the JSON response payload, allowing the dashboard to render gracefully with partial data instead of failing the entire HTTP response.
+- **Exclusion of CLV**: Customer Lifetime Value is excluded due to the high database load of cohort calculations, choosing instead to focus on operational real-time metrics.

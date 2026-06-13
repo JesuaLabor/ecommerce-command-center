@@ -1,110 +1,97 @@
 # eCommerce Intelligence Dashboard
 
-A unified analytics dashboard for merchants selling on both **Shopify** and **TikTok Shop**. Built as a design/engineering assignment demonstrating component architecture, API contract design, and graceful partial-failure handling.
+A unified, executive-grade intelligence dashboard for merchants selling on both **Shopify** and **TikTok Shop**. Designed and engineered to demonstrate advanced React component architecture, resilient API contract design, high-density styling, and graceful partial-failure handling.
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
 ```bash
+# Install dependencies
 npm install
+
+# Start the local development server
 npm run dev
 ```
 
-Then open [http://localhost:5173](http://localhost:5173).
+Then open [http://localhost:5173](http://localhost:5173) (or the port specified in terminal).
 
-Use the **Demo Mode** dropdown in the header to toggle between:
-- ✅ All Healthy — both platforms live
-- ⚠️ TikTok Stale — TikTok Shop data is 18 min old (exceeds threshold)
-- ⚠️ Shopify Stale — Shopify data is 20 min old (exceeds threshold)
-- 🔴 TikTok Down — TikTok API unavailable, Shopify-only view
-- 🔴 Shopify Down — Shopify API unavailable, TikTok-only view
-- 🔴🔴 Both Down — Both platform APIs unavailable, severe degradation view
+### Demo Mode Dropdown
+Use the **Demo Mode** selector in the header to simulate multiple partial-failure and replication lag scenarios:
+- **All Healthy**: Both platforms fully operational.
+- **TikTok Stale**: TikTok data is 18 minutes old (exceeds the 15-minute SLA).
+- **Shopify Stale**: Shopify data is 20 minutes old (exceeds the 15-minute SLA).
+- **TikTok Down**: TikTok API is offline (graceful Shopify-only degraded layout).
+- **Shopify Down**: Shopify API is offline (graceful TikTok-only degraded layout).
+- **Both Down**: Severe outage degraded placeholder view.
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 src/
 ├── api/
-│   └── mockData.js          # Mock API responses + fetchDashboard()
+│   └── mockData.js          # Mock schemas, scenario rules, and fetch dashboard API
 ├── components/
-│   ├── Header.jsx            # Merchant branding, date, scenario switcher
-│   ├── SyncStatusBanner.jsx  # Per-platform sync status + tooltips
-│   ├── KPISummary.jsx        # Revenue / Orders / Units Sold cards
-│   ├── InventoryHealth.jsx   # Low stock + out-of-stock + SKU summary
-│   ├── RecentOrders.jsx      # Unified order feed from both platforms
-│   └── LoadingScreen.jsx     # Skeleton loading state
-├── App.jsx                   # Root — owns all global state
-└── index.css                 # Design system + all component styles
+│   ├── Header.jsx            # Merchant branding, current date, and demo dropdown
+│   ├── SyncStatusBanner.jsx  # Pulsing per-platform status bars + help tooltips
+│   ├── KPISummary.jsx        # Revenue / Orders / Units Sold KPI cards with source splits
+│   ├── InventoryHealth.jsx   # Stock levels, critical tables, and Interactive Restock Modal
+│   ├── RecentOrders.jsx      # High-density orders dashboard with filters, search, and KPI summaries
+│   ├── OrderRow.jsx          # Reusable component rendering individual platform orders
+│   └── LoadingScreen.jsx     # App-level skeleton loading screen (initial mount only)
+├── App.jsx                   # Global state orchestrator and transition manager
+└── index.css                 # Core design tokens, premium dark layout, and keyframe animations
 docs/
-└── api-contract.json         # Full API contract (Deliverable 3)
-ASSUMPTIONS.md                # All documented assumptions
-README.md                     # This file
+└── api-contract.json         # Unified JSON API aggregator contract details
+ASSUMPTIONS.md                # Design assumptions and architectural rationale
+README.md                     # This documentation file
 ```
 
 ---
 
-## Deliverable 2 — Component Architecture
+## 🏗️ Deliverable 2 — Component Architecture & State Lift
 
-### State Ownership
+### State Ownership Matrix
 
 | Component | State Type | State Held | Responsibility |
 |---|---|---|---|
-| `App` | **Global** | `dashboardData`, `loading`, `error`, `scenario`, `lastRefreshed` | Root orchestrator. Fetches data, owns all shared state, passes props down. |
-| `Header` | Presentational | None | Renders merchant name, date, platform badges, demo scenario switcher. Calls `onScenarioChange` prop. |
-| `SyncStatusBanner` | **Local** | `tooltipVisible` (string\|null) | Shows per-platform sync status. Manages tooltip open/close locally — no need to lift this to parent. |
-| `KPISummary` | Presentational | None | Renders Revenue/Orders/Units cards with per-platform breakdown. Degrades gracefully when TikTok is unavailable. |
-| `InventoryHealth` | **Local** | `showAll` (boolean) | Merges inventory from both platforms. Manages "show more/less" list toggle locally. |
-| `RecentOrders` | Presentational | None | Renders unified order feed. Shows a notice row when TikTok is unavailable — never hides the section. |
-| `LoadingScreen` | Presentational | None | Self-contained skeleton shown during data fetch. No props needed. |
+| `App` | **Global** | `dashboardData`, `loading`, `error`, `scenario` | Root coordinator. Triggers fetches, shares API payload down, and controls loading transitions. |
+| `Header` | Presentational | None | Renders app branding, active page indicator, and forwards scenario switches. |
+| `SyncStatusBanner` | **Local** | `tooltipVisible` (platform name or null) | Manages active tooltip popovers locally (does not affect sibling layout). |
+| `KPISummary` | Presentational | None | Displays performance metrics. Disclaims unavailable sources. |
+| `InventoryHealth` | **Local** | `localInventory`, `restockItem`, `restockQty`, `toastMessage`, `showAll` | Manages stock replenishment flow, modal displays, success toast timers, and pagination locally. |
+| `RecentOrders` | **Local** | `filterPlatform`, `filterStatus`, `searchQuery` | Controls filtering, searching, and pagination of the unified orders feed. |
+| `OrderRow` | Presentational | None | Reusable presentation node rendering standard order details across all feeds. |
 
-### State Lift Rationale
-- `tooltipVisible` stays in `SyncStatusBanner` because no other component cares about which tooltip is open.
-- `showAll` stays in `InventoryHealth` because it's a pure UI toggle with no cross-component implications.
-- Everything else lives in `App` so all panels share a single source of truth from the API response.
-
----
-
-## Deliverable 4 — Engineering & UX Decisions
-
-### Trade-off: What was excluded and why?
-
-**Customer Lifetime Value (CLV) was intentionally excluded.**
-
-CLV requires historical cohort data — multiple API calls across date ranges, plus complex aggregation logic. Including it in a single `/api/v1/dashboard` endpoint would:
-
-1. Increase aggregator latency significantly (sequential or heavier parallel fetches)
-2. Require a separate data warehouse or analytics store beyond platform APIs
-3. Add architectural complexity (caching strategy, cohort definition logic) disproportionate to its daily operational value
-
-A merchant checking their morning dashboard cares about **today's revenue and inventory** — not a metric that changes meaningfully on a daily basis. CLV belongs in a dedicated analytics/growth view, not the command center.
+### Architectural Decoupling & DRY Principles
+- **OrderRow Abstraction**: Extracted identical order rendering logic from Shopify-specific and TikTok-specific feeds into `OrderRow.jsx`, cutting out 68 lines of duplicate code.
+- **Local Optimistic Mutation**: The Restock Modal in `InventoryHealth.jsx` uses local state to immediately update KPI metrics and transition restocked items out of critical list tables without waiting for a backend poll, mimicking optimistic UI updates.
 
 ---
 
-### Edge Case: How does the UI communicate TikTok delays without causing panic?
+## 🚀 Deliverable 4 — Key Engineering & UX Upgrades
 
-**Visual pattern:**
+### 1. Executive-Grade Orders Control Center
+Replaced a simple timeline list with a command center page layout:
+- **Summary Cards**: Displays Total Order Volume, Pending Orders, and Fulfilled Orders.
+- **Advanced Filtering**: Live search by Order ID/Customer Name and instant filters for Platform (Shopify/TikTok) and Status (Pending/Fulfilled/Cancelled).
+- **Platform Tags**: Custom branded badges to clearly separate sales channels.
 
-1. **Sync Status Banner** (top of dashboard) — an amber-bordered card with a `⚠️` icon reads: *"Delayed · 18 min — Last synced 18 min ago · Showing last known data."* The border pulses gently to draw attention without alarming.
+### 2. Interactive Stock Replenishment Modal
+Merchants can now restock items directly from the critical low stock alert table:
+- Clicking **Restock →** opens a styled modal popover.
+- Submitting an order updates stock counts in real-time, increases overall inventory health indicators, and removes the item from the critical warnings view.
+- A sliding success Toast notification confirms the restock operation.
 
-2. **Hover tooltip** — on hover, a calm plain-English explanation appears: *"TikTok Shop data is 18 minutes old (threshold: 15 min). This is usually resolved within a few minutes. Your dashboard continues to show the most recent available data."*
-
-3. **KPI cards and panels** — TikTok data still renders (last-known values). A `Shopify only *` disclaimer appears only when TikTok is fully unavailable, not when stale.
-
-4. **Section badges** — `Shopify only` amber chip appears on section headings only in the unavailable state.
-
-**What we intentionally avoided:**
-- ❌ No red color for staleness (red = unavailable only)
-- ❌ No blank/empty panels — stale data is always shown
-- ❌ No error modals or blocking overlays
-- ❌ No alarming language like "ERROR," "FAILED," or "BROKEN"
-
-**Reasoning:** Non-technical merchants cannot act on "upstream 5xx." They can act on "TikTok is running a few minutes behind — here's what we have." Calm, informational, actionable.
+### 3. Smooth, SaaS-Style Loading Transitions
+Eliminated layout shifts and blank screen flashes when switching scenarios or syncing data:
+- **Skeleton Loader**: Shown on initial mount to establish structure.
+- **Top Loading Progress Bar**: On subsequent refreshes, a slim animated gradient bar runs at the top of the main container, and the content below dims slightly (`.loading-dimmed`). Sidebar navigation and header widgets remain fully interactive.
 
 ---
 
-## See Also
-- [`docs/api-contract.json`](./docs/api-contract.json) — Full API contract with 3 scenarios
-- [`ASSUMPTIONS.md`](./ASSUMPTIONS.md) — All documented assumptions
+## 📈 Excluded Features & Technical Trade-offs
+- **Customer Lifetime Value (CLV)**: Intentionally excluded. Aggregating historical cohort curves across multiple endpoints significantly slows down response times. Real-time command dashboards optimize for daily operations (orders, current inventory levels), while cohort calculations belong in a slower offline analytics tool.
+- **Write-back Persistence**: Because this is a front-end evaluation prototype, restock actions update React state. Performing a hard reload or changing demo scenarios resets the catalog back to server values.
