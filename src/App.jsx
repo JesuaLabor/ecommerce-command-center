@@ -3,6 +3,8 @@ import { fetchDashboard } from "./api/mockData";
 
 import Sidebar from "./components/Sidebar";
 import OverviewPage from "./components/OverviewPage";
+import ShopifyPage from "./components/ShopifyPage";
+import TikTokPage from "./components/TikTokPage";
 import KPISummary from "./components/KPISummary";
 import StorePerformance from "./components/StorePerformance";
 import LoadingScreen from "./components/LoadingScreen";
@@ -131,7 +133,7 @@ export default function App() {
             </div>
             <RecentOrders platforms={dashboardData.platforms} />
           </>
-        ) : (
+        ) : activePage === "shopify" ? (
           <>
             <div className="page-header">
               <div className="page-title-block">
@@ -143,10 +145,23 @@ export default function App() {
                 <button className="btn-primary" id="btn-sync-stores" onClick={() => loadDashboard(scenario)}>↻ Sync Stores</button>
               </div>
             </div>
-            <KPISummary platforms={dashboardData.platforms} />
-            <StorePerformance platforms={dashboardData.platforms} />
+            <ShopifyPage platforms={dashboardData.platforms} onSync={() => loadDashboard(scenario)} />
           </>
-        )}
+        ) : activePage === "tiktok" ? (
+          <>
+            <div className="page-header">
+              <div className="page-title-block">
+                <h1 className="page-title">{page.title}</h1>
+                <p className="page-subtitle">{page.sub}</p>
+              </div>
+              <div className="page-actions">
+                <button className="btn-outline" id="btn-date-range">📅 Last 7 Days</button>
+                <button className="btn-primary" id="btn-sync-stores" onClick={() => loadDashboard(scenario)}>↻ Sync Stores</button>
+              </div>
+            </div>
+            <TikTokPage platforms={dashboardData.platforms} />
+          </>
+        ) : null}
       </main>
     </div>
   );
