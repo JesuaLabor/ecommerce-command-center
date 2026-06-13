@@ -1,4 +1,5 @@
 import { useState } from "react";
+import OrderRow from "./OrderRow";
 
 /**
  * TikTokPage — dedicated dashboard for TikTok Shop platform data only.
@@ -22,39 +23,6 @@ function KPICard({ id, label, icon, value, delta, up }) {
       <div className="kpi-card-value">{value}</div>
       <div className={`kpi-card-delta ${up ? "delta-up" : "delta-down"}`}>
         {up ? "↑" : "↓"} {delta}
-      </div>
-    </div>
-  );
-}
-
-function OrderRow({ order }) {
-  const statusMap = {
-    fulfilled: { label: "Fulfilled", className: "status-fulfilled" },
-    pending:   { label: "Pending",   className: "status-pending"   },
-    cancelled: { label: "Cancelled", className: "status-cancelled" },
-  };
-  const { label, className } = statusMap[order.status] ?? { label: order.status, className: "status-default" };
-
-  return (
-    <div className="order-item" id={`tiktok-order-${order.id}`}>
-      <div className="order-left">
-        <span className="order-source-dot dot-tiktok" />
-        {/* Product thumbnail */}
-        {order.item_image && (
-          <div className="order-product-thumb">
-            <span>{order.item_image}</span>
-          </div>
-        )}
-        <div className="order-info">
-          <span className="order-id">{order.id}</span>
-          {order.item_name && <span className="order-item-name">{order.item_name}{order.items > 1 ? ` +${order.items - 1}` : ""}</span>}
-          <span className="order-customer">{order.customer}</span>
-        </div>
-      </div>
-      <div className="order-right">
-        <span className="order-total">${order.total.toFixed(2)}</span>
-        <span className={`order-status ${className}`}>{label}</span>
-        <span className="order-time">{order.time}</span>
       </div>
     </div>
   );
@@ -254,7 +222,7 @@ export default function TikTokPage({ platforms }) {
             <p className="orders-empty">No recent TikTok Shop orders.</p>
           ) : (
             <div className="orders-list">
-              {recentOrders.map((o) => <OrderRow key={o.id} order={o} />)}
+              {recentOrders.map((o) => <OrderRow key={o.id} order={o} platformType="tiktok" />)}
             </div>
           )}
         </div>
