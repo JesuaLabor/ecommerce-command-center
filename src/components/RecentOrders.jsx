@@ -46,19 +46,24 @@ export default function RecentOrders({ platforms }) {
           <p className="orders-empty">No recent orders to display.</p>
         ) : (
           <div className="orders-list">
-            {allOrders.map((order) => {
+              {allOrders.map((order) => {
               const { label, className } = statusBadge(order.status);
               return (
                 <div key={`${order.source}-${order.id}`} className="order-item">
                   <div className="order-left">
                     <span className={`order-source-dot ${order.source === "Shopify" ? "dot-shopify" : "dot-tiktok"}`} />
+                    {order.item_image && (
+                      <div className="order-product-thumb">
+                        <span>{order.item_image}</span>
+                      </div>
+                    )}
                     <div className="order-info">
                       <span className="order-id">{order.id}</span>
+                      {order.item_name && <span className="order-item-name">{order.item_name}{order.items > 1 ? ` +${order.items - 1}` : ""}</span>}
                       <span className="order-customer">{order.customer}</span>
                     </div>
                   </div>
                   <div className="order-right">
-                    <span className="order-items">{order.items} item{order.items !== 1 ? "s" : ""}</span>
                     <span className="order-total">${order.total.toFixed(2)}</span>
                     <span className={`order-status ${className}`}>{label}</span>
                     <span className="order-time">{order.time}</span>

@@ -140,6 +140,37 @@ ul {
   flex-shrink: 0;
 }
 
+/* When the logo image is used, make the avatar a bit larger and transparent */
+.brand-avatar--logo {
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.brand-logo-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #fff;
+  border-radius: 8px;
+}
+
 .brand-text {
   display: flex;
   flex-direction: column;
@@ -2125,6 +2156,31 @@ ul {
 .order-customer {
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+/* Product thumbnail in order row */
+.order-product-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Item name label (bold, below order ID) */
+.order-item-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .order-right {
