@@ -26,7 +26,7 @@ function MiniTrend({ values, active }) {
   );
 }
 
-export default function StorePerformance({ platforms }) {
+export default function StorePerformance({ platforms, shopifyOnly = false }) {
   const tiktokOk = platforms.tiktok.status !== "unavailable";
   const tiktokStale = platforms.tiktok.status === "stale";
   const shopifyOk = platforms.shopify.status !== "unavailable";
@@ -44,13 +44,14 @@ export default function StorePerformance({ platforms }) {
         <span className="store-performance-title">Store Performance</span>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {bothDown && <span className="sync-pill sync-pill-down">🔴 All platforms unavailable</span>}
-          {!bothDown && !shopifyOk && <span className="sync-pill sync-pill-down">🔴 Shopify unavailable</span>}
-          {!bothDown && !tiktokOk && <span className="sync-pill sync-pill-down">🔴 TikTok unavailable</span>}
-          {!bothDown && shopifyStale && tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ Shopify & TikTok delayed</span>}
-          {!bothDown && shopifyStale && !tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ Shopify delayed · {platforms.shopify.staleness_minutes} min</span>}
-          {!bothDown && tiktokStale && !shopifyStale && <span className="sync-pill sync-pill-stale">⚠️ TikTok delayed · {platforms.tiktok.staleness_minutes} min</span>}
-          {shopifyOk && tiktokOk && !shopifyStale && !tiktokStale && <span className="sync-pill sync-pill-ok">✓ All synced</span>}
+          {/* When shopifyOnly=true (Shopify page), only surface Shopify-relevant status */}
+          {!shopifyOnly && bothDown && <span className="sync-pill sync-pill-down">🔴 All platforms unavailable</span>}
+          {!shopifyOk && <span className="sync-pill sync-pill-down">🔴 Shopify unavailable</span>}
+          {!shopifyOnly && !bothDown && !tiktokOk && <span className="sync-pill sync-pill-down">🔴 TikTok unavailable</span>}
+          {!shopifyOnly && !bothDown && shopifyStale && tiktokStale && <span className="sync-pill sync-pill-stale">⚠️ Shopify & TikTok delayed</span>}
+          {shopifyStale && (!tiktokStale || shopifyOnly) && <span className="sync-pill sync-pill-stale">⚠️ Shopify delayed · {platforms.shopify.staleness_minutes} min</span>}
+          {!shopifyOnly && !bothDown && tiktokStale && !shopifyStale && <span className="sync-pill sync-pill-stale">⚠️ TikTok delayed · {platforms.tiktok.staleness_minutes} min</span>}
+          {shopifyOk && !shopifyStale && (shopifyOnly || (tiktokOk && !tiktokStale)) && <span className="sync-pill sync-pill-ok">✓ {shopifyOnly ? "Shopify synced" : "All synced"}</span>}
           <button className="three-dot-btn" aria-label="More options" id="store-performance-menu">⋯</button>
         </div>
       </div>
