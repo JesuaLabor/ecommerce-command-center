@@ -1009,11 +1009,11 @@ ul {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 18px 20px 16px;
+  padding: 14px 16px 12px;
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  min-height: 158px;
+  min-height: 126px;
   transition: box-shadow var(--transition), transform var(--transition);
 }
 
@@ -1044,8 +1044,8 @@ ul {
 }
 
 .ov-stat-label {
-  font-size: 0.78rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 400;
   color: var(--text-secondary);
   flex: 1;
   white-space: nowrap;
@@ -1072,14 +1072,14 @@ ul {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 10px 0 6px;
+  padding: 4px 0 2px;
 }
 
 .ov-stat-value {
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 1.5rem; /* Shopify Admin metric value size */
+  font-weight: 600;   /* Sleek, semi-bold weight */
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   line-height: 1;
   padding: 0 0 2px;
 }
@@ -1088,8 +1088,8 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.76rem;
-  font-weight: 600;
+  font-size: 0.75rem; /* Standard 12px indicator */
+  font-weight: 500;
 }
 
 /* Filled circle with directional arrow inside */
@@ -1125,16 +1125,16 @@ ul {
 }
 
 .ov-stat-extra {
-  font-size: 0.67rem;
-  color: var(--amber);
-  font-weight: 600;
+  font-size: 0.68rem;
+  color: rgba(245, 158, 11, 0.8);
+  font-weight: 500;
 }
 
 /* ── Footer zone: stacks delta then warning ── */
 .ov-stat-footer {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 /* Both-down KPI banner (replaces the 4-card row) */
